@@ -6,8 +6,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import ru.dmitriy.commondomain.event.UserValidationResponseEvent;
-import ru.dmitriy.commondomain.event.ValidateUserEvent;
+import ru.dmitriy.commondomain.listener.event.UserValidationResponseEvent;
+import ru.dmitriy.commondomain.listener.event.ValidateUserEvent;
 import ru.dmitriy.userservice.repository.UserRepository;
 
 @Service

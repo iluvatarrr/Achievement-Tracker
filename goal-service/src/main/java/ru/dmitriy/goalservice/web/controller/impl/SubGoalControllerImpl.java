@@ -5,12 +5,12 @@ import ru.dmitriy.commondomain.domain.exception.GoalNotFoundException;
 import ru.dmitriy.commondomain.domain.exception.SubGoalNotFountException;
 import ru.dmitriy.commondomain.domain.goal.GoalStatus;
 import ru.dmitriy.commondomain.domain.goal.SubGoal;
+import ru.dmitriy.commondomain.util.MapperRegistry;
 import ru.dmitriy.goalservice.service.SubGoalService;
 import ru.dmitriy.goalservice.web.controller.SubGoalController;
 import ru.dmitriy.goalservice.web.dto.SubGoalDto;
 import ru.dmitriy.goalservice.web.dto.UpdateSubGoalDto;
-import ru.dmitriy.goalservice.web.mapper.Mappable;
-import ru.dmitriy.goalservice.web.mapper.MapperRegistry;
+import ru.dmitriy.commondomain.util.Mappable;
 import java.util.List;
 
 @RestController

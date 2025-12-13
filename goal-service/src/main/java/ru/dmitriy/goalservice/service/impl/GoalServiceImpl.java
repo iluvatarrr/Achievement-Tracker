@@ -8,16 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dmitriy.commondomain.domain.exception.SubGoalNotFountException;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
-import ru.dmitriy.commondomain.domain.goal.Goal;
-import ru.dmitriy.commondomain.domain.goal.GoalCategory;
-import ru.dmitriy.commondomain.domain.goal.GoalStatus;
-import ru.dmitriy.commondomain.domain.goal.SubGoal;
+import ru.dmitriy.commondomain.domain.goal.*;
 import ru.dmitriy.commondomain.domain.user.User;
 import ru.dmitriy.commondomain.domain.exception.GoalNotFoundException;
+import ru.dmitriy.commondomain.listener.UserValidationResponseEventListener;
 import ru.dmitriy.goalservice.repository.GoalRepository;
 import ru.dmitriy.goalservice.repository.GoalSpecifications;
 import ru.dmitriy.goalservice.service.GoalService;
-import ru.dmitriy.goalservice.listener.UserValidationResponseEventListener;
 import javax.naming.ServiceUnavailableException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,7 +49,7 @@ public class GoalServiceImpl implements GoalService {
     @Override
     @Transactional(readOnly = true)
     public List<Goal> findFiltered(GoalStatus status, GoalCategory category, LocalDateTime deadline, Long userId) throws ServiceUnavailableException, UserNotFoundException {
-        checkUserId(userId);
+        userValidationResponseEventListener.checkUserId(userId);
         var spec = Specification.where(GoalSpecifications.fetchSubGoals())
                 .and(GoalSpecifications.hasUserId(userId))
                 .and(GoalSpecifications.hasStatus(status))
@@ -61,20 +58,14 @@ public class GoalServiceImpl implements GoalService {
         return goalRepository.findAll(spec);
     }
 
-    private void checkUserId(Long userId) throws ServiceUnavailableException, UserNotFoundException {
-        boolean userExists = userValidationResponseEventListener.validateUser(userId);
-        if (!userExists) {
-            throw new UserNotFoundException("Пользователь с id=" + userId + " не найден");
-        }
-    }
-
     @Override
     @Transactional
     public Long save(Goal goal, Long userId) throws UserNotFoundException, ServiceUnavailableException {
         log.debug("Сохранение цели для пользователя: {}", userId);
-        checkUserId(userId);
+        userValidationResponseEventListener.checkUserId(userId);
         User user = entityManager.getReference(User.class, userId);
         goal.setUser(user);
+//        goal.setGoalType(GoalType.SELF);
         log.info("Пользователь найден, сохраняем цель");
         goal.setCreatedAt(LocalDateTime.now());
         if (goal.getSubGoalList() != null) {

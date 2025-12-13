@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
         "ru.dmitriy.apprunner",
         "ru.dmitriy.userservice",
         "ru.dmitriy.goalservice",
+        "ru.dmitriy.groupservice",
         "ru.dmitriy.commondomain"
 })
 public class AppRunnerApplication {

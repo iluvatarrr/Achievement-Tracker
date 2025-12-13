@@ -2,6 +2,7 @@ package ru.dmitriy.commondomain.domain.user;
 
 import jakarta.persistence.*;
 import ru.dmitriy.commondomain.domain.goal.Goal;
+import ru.dmitriy.commondomain.domain.group.Group;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -29,10 +30,10 @@ public class User {
     @OneToMany(mappedBy = "user",
             cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Goal> goals = new HashSet<>();
-//    @ManyToMany(mappedBy = "users")
-//    private Set<Group> groups = new HashSet<>();
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<Group> groups = new HashSet<>();
 
-    public User(UserStatus userStatus, UserProfile profile, Set<Role> roles, LocalDateTime createdAt, String password, String email, Long id, Set<Goal> goals) {
+    public User(UserStatus userStatus, UserProfile profile, Set<Role> roles, LocalDateTime createdAt, String password, String email, Long id, Set<Goal> goals, Set<Group> groups) {
         this.userStatus = userStatus;
         this.profile = profile;
         this.roles = roles;
@@ -41,6 +42,7 @@ public class User {
         this.email = email;
         this.id = id;
         this.goals = goals;
+        this.groups = groups;
     }
 
     public User(Long id) {
@@ -132,5 +134,13 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(id, email, password, createdAt, roles, profile, userStatus, goals);
+    }
+
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
     }
 }

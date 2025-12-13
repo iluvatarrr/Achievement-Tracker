@@ -26,7 +26,11 @@
             <artifactId>goal-service</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>ru.dmitriy</groupId>
+            <artifactId>group-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- Spring Boot стартеры -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

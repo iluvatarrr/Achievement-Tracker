@@ -9,14 +9,14 @@ import ru.dmitriy.commondomain.domain.goal.Goal;
 import ru.dmitriy.commondomain.domain.goal.GoalCategory;
 import ru.dmitriy.commondomain.domain.goal.GoalStatus;
 import ru.dmitriy.commondomain.domain.goal.SubGoal;
+import ru.dmitriy.commondomain.util.MapperRegistry;
 import ru.dmitriy.goalservice.service.GoalService;
 import ru.dmitriy.goalservice.web.controller.GoalController;
 import ru.dmitriy.goalservice.web.dto.CreateGoalDto;
 import ru.dmitriy.goalservice.web.dto.CreateSubGoalDto;
 import ru.dmitriy.goalservice.web.dto.GoalDto;
 import ru.dmitriy.goalservice.web.dto.UpdateGoalDto;
-import ru.dmitriy.goalservice.web.mapper.Mappable;
-import ru.dmitriy.goalservice.web.mapper.MapperRegistry;
+import ru.dmitriy.commondomain.util.Mappable;
 import javax.naming.ServiceUnavailableException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -100,10 +100,5 @@ public class GoalControllerImpl implements GoalController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         goalService.delete(id);
-    }
-
-    @Override
-    public Double calculateGoalProgress(Long goalId) throws GoalNotFoundException {
-        return 0.0;
     }
 }

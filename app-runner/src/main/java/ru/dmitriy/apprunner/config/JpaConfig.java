@@ -7,11 +7,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EntityScan(basePackages = {
         "ru.dmitriy.commondomain.domain.goal",
-        "ru.dmitriy.commondomain.domain.user"
+        "ru.dmitriy.commondomain.domain.user",
+        "ru.dmitriy.commondomain.domain.group"
 })
 @EnableJpaRepositories(basePackages = {
         "ru.dmitriy.userservice.repository",
-        "ru.dmitriy.goalservice.repository"
+        "ru.dmitriy.goalservice.repository",
+        "ru.dmitriy.groupservice.repository"
 })
 public class JpaConfig {
 }

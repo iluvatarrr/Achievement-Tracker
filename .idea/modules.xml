@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/group-service/group-service.iml" filepath="$PROJECT_DIR$/group-service/group-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/multi-module-app.iml" filepath="$PROJECT_DIR$/multi-module-app.iml" />
     </modules>
   </component>

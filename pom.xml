@@ -21,6 +21,7 @@
     <modules>
         <module>user-service</module>
         <module>goal-service</module>
+        <module>group-service</module>
         <module>common-domain</module>
         <module>app-runner</module>
     </modules>

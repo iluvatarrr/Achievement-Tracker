@@ -5,7 +5,7 @@ import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
 import ru.dmitriy.userservice.service.UserService;
 import ru.dmitriy.userservice.web.controller.UserController;
 import ru.dmitriy.userservice.web.dto.UserDto;
-import ru.dmitriy.userservice.web.mapper.impl.UserMapper;
+import ru.dmitriy.userservice.web.mapper.UserMapper;
 
 @RestController
 @RequestMapping("/api/v1/user")

@@ -3,11 +3,10 @@ package ru.dmitriy.commondomain.domain.goal;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import ru.dmitriy.commondomain.domain.group.Group;
 import ru.dmitriy.commondomain.domain.user.User;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "goals")
@@ -21,6 +20,8 @@ public class Goal {
     private GoalStatus goalStatus;
     @Enumerated(EnumType.STRING)
     private GoalCategory goalCategory;
+//    @Enumerated(EnumType.STRING)
+//    private GoalType goalType;
     private Integer progressInPercent;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
@@ -34,10 +35,12 @@ public class Goal {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
-//    @ManyToMany(mappedBy = "goals")
-//    private Set<Group> groups = new HashSet<>();
+    @ManyToMany(mappedBy = "goals")
+    private Set<Group> groups = new HashSet<>();
 
-    public Goal(Long id, String title, String description, GoalStatus goalStatus, GoalCategory goalCategory, LocalDateTime createdAt, LocalDateTime completedAt, LocalDateTime deadline, List<SubGoal> subGoalList, User user) {
+    public Goal(Long id, String title, String description, GoalStatus goalStatus, GoalCategory goalCategory,
+                LocalDateTime createdAt, LocalDateTime completedAt, LocalDateTime deadline, List<SubGoal> subGoalList,
+                User user, Set<Group> groups) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -48,6 +51,7 @@ public class Goal {
         this.deadline = deadline;
         this.subGoalList = subGoalList;
         this.user = user;
+        this.groups = groups;
     }
 
     public Goal() {}
@@ -162,11 +166,25 @@ public class Goal {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Goal goal = (Goal) object;
-        return Objects.equals(id, goal.id) && Objects.equals(title, goal.title) && Objects.equals(description, goal.description) && goalStatus == goal.goalStatus && goalCategory == goal.goalCategory && Objects.equals(createdAt, goal.createdAt) && Objects.equals(completedAt, goal.completedAt) && Objects.equals(deadline, goal.deadline) && Objects.equals(subGoalList, goal.subGoalList) && Objects.equals(user, goal.user);
+        return Objects.equals(id, goal.id) && Objects.equals(title, goal.title) &&
+                Objects.equals(description, goal.description) && goalStatus == goal.goalStatus &&
+                    goalCategory == goal.goalCategory &&
+                Objects.equals(createdAt, goal.createdAt) && Objects.equals(completedAt, goal.completedAt) &&
+                Objects.equals(deadline, goal.deadline) && Objects.equals(subGoalList, goal.subGoalList) &&
+                Objects.equals(user, goal.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, goalStatus, goalCategory, createdAt, completedAt, deadline, subGoalList, user);
+        return Objects.hash(id, title, description, goalStatus, goalCategory,
+                createdAt, completedAt, deadline, subGoalList, user);
+    }
+
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
     }
 }

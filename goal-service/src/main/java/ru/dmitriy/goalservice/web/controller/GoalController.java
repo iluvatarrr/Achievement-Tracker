@@ -24,5 +24,4 @@ public interface GoalController {
     GoalDto removeSubGoal(Long id, Long subId) throws GoalNotFoundException, SubGoalNotFountException;
     GoalDto updateStatusGoal(Long id, GoalStatus goalStatus) throws GoalNotFoundException;
     List<GoalDto> getAllFiltered(GoalStatus status, GoalCategory category,LocalDateTime deadline,Long id) throws UserNotFoundException, ServiceUnavailableException;
-    Double calculateGoalProgress(Long goalId) throws GoalNotFoundException;
 }

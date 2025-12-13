@@ -13,6 +13,7 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/common-domain/pom.xml" />
         <option value="$PROJECT_DIR$/app-runner/pom.xml" />
+        <option value="$PROJECT_DIR$/group-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
