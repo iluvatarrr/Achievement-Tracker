@@ -15,7 +15,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
+    private String username;
     private String password;
     private LocalDateTime createdAt;
     @Column(name = "role")
@@ -33,13 +33,13 @@ public class User {
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Group> groups = new HashSet<>();
 
-    public User(UserStatus userStatus, UserProfile profile, Set<Role> roles, LocalDateTime createdAt, String password, String email, Long id, Set<Goal> goals, Set<Group> groups) {
+    public User(UserStatus userStatus, UserProfile profile, Set<Role> roles, LocalDateTime createdAt, String password, String username, Long id, Set<Goal> goals, Set<Group> groups) {
         this.userStatus = userStatus;
         this.profile = profile;
         this.roles = roles;
         this.createdAt = createdAt;
         this.password = password;
-        this.email = email;
+        this.username = username;
         this.id = id;
         this.goals = goals;
         this.groups = groups;
@@ -59,12 +59,12 @@ public class User {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String email) {
+        this.username = email;
     }
 
     public String getPassword() {
@@ -128,12 +128,12 @@ public class User {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         User user = (User) object;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(createdAt, user.createdAt) && Objects.equals(roles, user.roles) && Objects.equals(profile, user.profile) && userStatus == user.userStatus && Objects.equals(goals, user.goals);
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(createdAt, user.createdAt) && Objects.equals(roles, user.roles) && Objects.equals(profile, user.profile) && userStatus == user.userStatus && Objects.equals(goals, user.goals);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, password, createdAt, roles, profile, userStatus, goals);
+        return Objects.hash(id, username, password, createdAt, roles, profile, userStatus, goals);
     }
 
     public Set<Group> getGroups() {

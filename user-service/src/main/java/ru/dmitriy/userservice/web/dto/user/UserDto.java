@@ -1,4 +1,4 @@
-package ru.dmitriy.userservice.web.dto;
+package ru.dmitriy.userservice.web.dto.user;
 
 import ru.dmitriy.commondomain.domain.user.Role;
 import ru.dmitriy.commondomain.domain.user.UserStatus;

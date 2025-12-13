@@ -3,10 +3,10 @@ package ru.dmitriy.userservice.web.mapper;
 import org.springframework.stereotype.Service;
 import ru.dmitriy.commondomain.domain.user.UserProfile;
 import ru.dmitriy.commondomain.util.Mappable;
-import ru.dmitriy.userservice.web.dto.UserProfileDto;
+import ru.dmitriy.userservice.web.dto.user.UserProfileDto;
 
 @Service
-public class UserProfileMapper implements Mappable<UserProfile, UserProfileDto> {
+public class UserProfileDtoMapper implements Mappable<UserProfile, UserProfileDto> {
 
     @Override
     public UserProfile toEntity(UserProfileDto dto) {

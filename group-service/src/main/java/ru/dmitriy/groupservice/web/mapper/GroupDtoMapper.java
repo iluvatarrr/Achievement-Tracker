@@ -58,7 +58,7 @@ public class GroupDtoMapper implements Mappable<Group, GroupDto> {
 
         return new UserInfo(
                 user.getId(),
-                user.getEmail()
+                user.getUsername()
         );
     }
 

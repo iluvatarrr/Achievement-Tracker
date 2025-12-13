@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.dmitriy.commondomain.domain.user.User;
 import ru.dmitriy.commondomain.util.Mappable;
-import ru.dmitriy.userservice.web.dto.UserDto;
+import ru.dmitriy.userservice.web.dto.user.UserDto;
 
 @Service
-public class UserMapper implements Mappable<User, UserDto> {
+public class UserDtoMapper implements Mappable<User, UserDto> {
 
     @Autowired
-    private UserProfileMapper userProfileMapper;
+    private UserProfileDtoMapper userProfileDtoMapper;
 
     @Override
     public User toEntity(UserDto dto) {
@@ -18,13 +18,13 @@ public class UserMapper implements Mappable<User, UserDto> {
             return null;
         }
         User user = new User();
-        user.setEmail(dto.email());
+        user.setUsername(dto.email());
         user.setPassword(dto.password());
         user.setCreatedAt(dto.createdAt());
         user.setRoles(dto.roles());
         user.setUserStatus(dto.userStatus());
         if (dto.profile() != null) {
-            var userProfile = userProfileMapper.toEntity(dto.profile());
+            var userProfile = userProfileDtoMapper.toEntity(dto.profile());
             userProfile.setUser(user);
             user.setProfile(userProfile);
         }
@@ -36,9 +36,9 @@ public class UserMapper implements Mappable<User, UserDto> {
         if (entity == null) {
             return null;
         }
-        var userProfileDto = userProfileMapper.toDto(entity.getProfile());
+        var userProfileDto = userProfileDtoMapper.toDto(entity.getProfile());
         return new UserDto(
-                entity.getEmail(),
+                entity.getUsername(),
                 entity.getPassword(),
                 entity.getCreatedAt(),
                 entity.getRoles(),

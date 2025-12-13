@@ -32,7 +32,7 @@ public class CreateGroupDtoMapper implements Mappable<Group, CreateGroupDto> {
         if (group.getCreatedBy() != null) {
             createdByInfo = new UserInfo(
                     group.getCreatedBy().getId(),
-                    group.getCreatedBy().getEmail()
+                    group.getCreatedBy().getUsername()
             );
         }
 

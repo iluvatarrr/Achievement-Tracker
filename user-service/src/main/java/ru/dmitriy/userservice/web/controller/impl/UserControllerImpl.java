@@ -4,16 +4,16 @@ import org.springframework.web.bind.annotation.*;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
 import ru.dmitriy.userservice.service.UserService;
 import ru.dmitriy.userservice.web.controller.UserController;
-import ru.dmitriy.userservice.web.dto.UserDto;
-import ru.dmitriy.userservice.web.mapper.UserMapper;
+import ru.dmitriy.userservice.web.dto.user.UserDto;
+import ru.dmitriy.userservice.web.mapper.UserDtoMapper;
 
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserControllerImpl implements UserController {
     private final UserService userService;
-    private final UserMapper mapper;
+    private final UserDtoMapper mapper;
 
-    public UserControllerImpl(UserService userService, UserMapper mapper) {
+    public UserControllerImpl(UserService userService, UserDtoMapper mapper) {
         this.userService = userService;
         this.mapper = mapper;
     }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface UserService extends CRUDService<Long, User> {
     User updateWithoutProfile(Long id, User user) throws UserNotFoundException;
+    User getByUsername(String username) throws UserNotFoundException;
 }

@@ -1,4 +1,4 @@
-package ru.dmitriy.userservice.web.dto;
+package ru.dmitriy.userservice.web.dto.user;
 
 public record UserProfileDto(
          String firstName,

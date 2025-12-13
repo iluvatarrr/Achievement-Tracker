@@ -1,21 +1,29 @@
 package ru.dmitriy.userservice.service.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.dmitriy.commondomain.domain.user.Role;
 import ru.dmitriy.commondomain.domain.user.User;
 import ru.dmitriy.commondomain.domain.user.UserProfile;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
+import ru.dmitriy.commondomain.domain.user.UserStatus;
 import ru.dmitriy.userservice.repository.UserRepository;
 import ru.dmitriy.userservice.service.UserService;
+import ru.dmitriy.userservice.web.dto.user.UserProfileDto;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
-    public UserServiceImpl(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -26,14 +34,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    public User getByUsername(String username) throws UserNotFoundException {
+        return userRepository.findByUsername(username).orElseThrow(() ->
+                new UserNotFoundException("Пользователь не найлен по usename: " + username));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public User getById(Long id) throws UserNotFoundException {
         return userRepository.findById(id)
-                .orElseThrow(()-> new UserNotFoundException("User not found with id: " + id));
+                .orElseThrow(()-> new UserNotFoundException("Пользователь не найден с id: " + id));
     }
 
     @Override
     @Transactional
     public Long save(User user) {
+        user.setCreatedAt(LocalDateTime.now());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Set.of(Role.ROLE_USER));
+        user.setUserStatus(UserStatus.ACTIVE);
         return userRepository.save(user).getId();
     }
 
@@ -41,8 +60,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User update(Long id, User userToUpdate) throws UserNotFoundException {
         User existingUser = getById(id);
-        existingUser.setEmail(userToUpdate.getEmail());
-        existingUser.setPassword(userToUpdate.getPassword());
+        existingUser.setUsername(userToUpdate.getUsername());
         existingUser.setRoles(userToUpdate.getRoles());
         existingUser.setUserStatus(userToUpdate.getUserStatus());
         if (userToUpdate.getProfile() != null) {
