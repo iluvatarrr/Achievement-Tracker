@@ -21,6 +21,7 @@ public class Goal {
     private GoalStatus goalStatus;
     @Enumerated(EnumType.STRING)
     private GoalCategory goalCategory;
+    private Integer progressInPercent;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -134,6 +135,14 @@ public class Goal {
                 addSubGoal(subGoal);
             }
         }
+    }
+
+    public Integer getProgressInPercent() {
+        return progressInPercent;
+    }
+
+    public void setProgressInPercent(Integer progressInPercent) {
+        this.progressInPercent = progressInPercent;
     }
 
     public void addSubGoal(SubGoal subGoal) {

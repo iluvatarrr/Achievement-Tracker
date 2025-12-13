@@ -10,6 +10,15 @@ import java.time.LocalDateTime;
 
 public abstract class GoalSpecifications {
 
+    public static Specification<Goal> hasUserId(Long userId) {
+        return (root, query, criteriaBuilder) -> {
+            if (userId == null) {
+                return criteriaBuilder.conjunction(); // Возвращает все, если userId не указан
+            }
+            return criteriaBuilder.equal(root.get("user").get("id"), userId);
+        };
+    }
+
     public static Specification<Goal> hasStatus(GoalStatus status) {
         return (root, query, cb) ->
                 status == null ? null : cb.equal(root.get("goalStatus"), status);

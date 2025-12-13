@@ -7,7 +7,6 @@ import ru.dmitriy.commondomain.domain.exception.GoalNotFoundException;
 import ru.dmitriy.commondomain.domain.goal.GoalCategory;
 import ru.dmitriy.commondomain.domain.goal.GoalStatus;
 import ru.dmitriy.commondomain.domain.goal.SubGoal;
-import ru.dmitriy.goalservice.web.dto.GoalDto;
 
 import javax.naming.ServiceUnavailableException;
 import java.time.LocalDateTime;
@@ -24,11 +23,13 @@ public interface GoalService extends CRUDService<Long, Goal> {
 
     Goal removeSubGoal(Long id, Long subId) throws GoalNotFoundException, SubGoalNotFountException;
 
-    List<Goal> findFiltered(GoalStatus status, GoalCategory category, LocalDateTime deadline);
+    List<Goal> findFiltered(GoalStatus status, GoalCategory category, LocalDateTime deadline, Long id) throws ServiceUnavailableException, UserNotFoundException;
 
     Goal updateGoalStatus(Long id, GoalStatus goalStatus) throws GoalNotFoundException;
 
     Goal update(Long id, Goal goal) throws GoalNotFoundException;
 
     void delete(Long id);
+
+    void calculateGoalProgress(Goal goal);
 }

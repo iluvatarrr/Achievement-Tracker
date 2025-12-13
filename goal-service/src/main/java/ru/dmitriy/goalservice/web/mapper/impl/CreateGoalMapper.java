@@ -3,23 +3,22 @@ package ru.dmitriy.goalservice.web.mapper.impl;
 import org.springframework.stereotype.Service;
 import ru.dmitriy.commondomain.domain.goal.Goal;
 import ru.dmitriy.commondomain.domain.goal.SubGoal;
-import ru.dmitriy.goalservice.web.dto.GoalDto;
+import ru.dmitriy.goalservice.web.dto.CreateGoalDto;
 import ru.dmitriy.goalservice.web.mapper.Mappable;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class GoalMapper implements Mappable<Goal, GoalDto> {
+public class CreateGoalMapper implements Mappable<Goal, CreateGoalDto> {
 
-    private final SubGoalMapper subGoalMapper;
+    private final CreateSubGoalMapper createSubGoalMapper;
 
-    public GoalMapper(SubGoalMapper subGoalMapper) {
-        this.subGoalMapper = subGoalMapper;
+    public CreateGoalMapper(CreateSubGoalMapper createSubGoalMapper) {
+        this.createSubGoalMapper = createSubGoalMapper;
     }
 
     @Override
-    public Goal toEntity(GoalDto goalDto) {
+    public Goal toEntity(CreateGoalDto goalDto) {
         if (goalDto == null) {
             return null;
         }
@@ -29,14 +28,11 @@ public class GoalMapper implements Mappable<Goal, GoalDto> {
         goal.setDescription(goalDto.description());
         goal.setGoalStatus(goalDto.goalStatus());
         goal.setGoalCategory(goalDto.goalCategory());
-        goal.setCreatedAt(goalDto.createdAt());
-        goal.setCompletedAt(goalDto.completedAt());
         goal.setDeadline(goalDto.deadline());
-        goal.setProgressInPercent(goalDto.progressInPercent());
         if (goalDto.subGoalList() != null) {
             List<SubGoal> subGoals = goalDto.subGoalList().stream()
                     .map(subGoalDto -> {
-                        SubGoal subGoal = subGoalMapper.toEntity(subGoalDto);
+                        SubGoal subGoal = createSubGoalMapper.toEntity(subGoalDto);
                         subGoal.setGoal(goal);
                         return subGoal;
                     })
@@ -47,23 +43,20 @@ public class GoalMapper implements Mappable<Goal, GoalDto> {
     }
 
     @Override
-    public GoalDto toDto(Goal goal) {
+    public CreateGoalDto toDto(Goal goal) {
         if (goal == null) {
             return null;
         }
-        return new GoalDto(
+        return new CreateGoalDto(
                 goal.getId(),
                 goal.getTitle(),
                 goal.getDescription(),
                 goal.getGoalStatus(),
                 goal.getGoalCategory(),
-                goal.getProgressInPercent(),
-                goal.getCreatedAt(),
-                goal.getCompletedAt(),
                 goal.getDeadline(),
                 goal.getSubGoalList() != null ?
                         goal.getSubGoalList().stream()
-                                .map(subGoalMapper::toDto)
+                                .map(createSubGoalMapper::toDto)
                                 .collect(Collectors.toList()) :
                         List.of()
         );

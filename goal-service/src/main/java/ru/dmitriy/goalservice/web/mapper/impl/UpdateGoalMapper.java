@@ -4,22 +4,23 @@ import org.springframework.stereotype.Service;
 import ru.dmitriy.commondomain.domain.goal.Goal;
 import ru.dmitriy.commondomain.domain.goal.SubGoal;
 import ru.dmitriy.goalservice.web.dto.GoalDto;
+import ru.dmitriy.goalservice.web.dto.UpdateGoalDto;
 import ru.dmitriy.goalservice.web.mapper.Mappable;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class GoalMapper implements Mappable<Goal, GoalDto> {
+public class UpdateGoalMapper implements Mappable<Goal, UpdateGoalDto> {
 
-    private final SubGoalMapper subGoalMapper;
+    private final UpdateSubGoalMapper updateSubGoalMapper;
 
-    public GoalMapper(SubGoalMapper subGoalMapper) {
-        this.subGoalMapper = subGoalMapper;
+    public UpdateGoalMapper(UpdateSubGoalMapper updateSubGoalMapper) {
+        this.updateSubGoalMapper = updateSubGoalMapper;
     }
 
     @Override
-    public Goal toEntity(GoalDto goalDto) {
+    public Goal toEntity(UpdateGoalDto goalDto) {
         if (goalDto == null) {
             return null;
         }
@@ -29,14 +30,11 @@ public class GoalMapper implements Mappable<Goal, GoalDto> {
         goal.setDescription(goalDto.description());
         goal.setGoalStatus(goalDto.goalStatus());
         goal.setGoalCategory(goalDto.goalCategory());
-        goal.setCreatedAt(goalDto.createdAt());
-        goal.setCompletedAt(goalDto.completedAt());
         goal.setDeadline(goalDto.deadline());
-        goal.setProgressInPercent(goalDto.progressInPercent());
         if (goalDto.subGoalList() != null) {
             List<SubGoal> subGoals = goalDto.subGoalList().stream()
                     .map(subGoalDto -> {
-                        SubGoal subGoal = subGoalMapper.toEntity(subGoalDto);
+                        SubGoal subGoal = updateSubGoalMapper.toEntity(subGoalDto);
                         subGoal.setGoal(goal);
                         return subGoal;
                     })
@@ -47,23 +45,20 @@ public class GoalMapper implements Mappable<Goal, GoalDto> {
     }
 
     @Override
-    public GoalDto toDto(Goal goal) {
+    public UpdateGoalDto toDto(Goal goal) {
         if (goal == null) {
             return null;
         }
-        return new GoalDto(
+        return new UpdateGoalDto(
                 goal.getId(),
                 goal.getTitle(),
                 goal.getDescription(),
                 goal.getGoalStatus(),
                 goal.getGoalCategory(),
-                goal.getProgressInPercent(),
-                goal.getCreatedAt(),
-                goal.getCompletedAt(),
                 goal.getDeadline(),
                 goal.getSubGoalList() != null ?
                         goal.getSubGoalList().stream()
-                                .map(subGoalMapper::toDto)
+                                .map(updateSubGoalMapper::toDto)
                                 .collect(Collectors.toList()) :
                         List.of()
         );

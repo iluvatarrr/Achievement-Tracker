@@ -6,15 +6,12 @@ import ru.dmitriy.commondomain.domain.goal.GoalStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record GoalDto(
+public record CreateGoalDto(
         Long id,
         String title,
         String description,
         GoalStatus goalStatus,
         GoalCategory goalCategory,
-        Integer progressInPercent,
-        LocalDateTime createdAt,
-        LocalDateTime completedAt,
         LocalDateTime deadline,
-        List<SubGoalDto> subGoalList) {
+        List<CreateSubGoalDto> subGoalList) {
 }

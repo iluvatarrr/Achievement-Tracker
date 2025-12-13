@@ -51,23 +51,28 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Goal> findFiltered(GoalStatus status, GoalCategory category, LocalDateTime deadline) {
+    public List<Goal> findFiltered(GoalStatus status, GoalCategory category, LocalDateTime deadline, Long userId) throws ServiceUnavailableException, UserNotFoundException {
+        checkUserId(userId);
         var spec = Specification.where(GoalSpecifications.fetchSubGoals())
+                .and(GoalSpecifications.hasUserId(userId))
                 .and(GoalSpecifications.hasStatus(status))
                 .and(GoalSpecifications.hasCategory(category))
                 .and(GoalSpecifications.deadlineBefore(deadline));
-
         return goalRepository.findAll(spec);
+    }
+
+    private void checkUserId(Long userId) throws ServiceUnavailableException, UserNotFoundException {
+        boolean userExists = userValidationResponseEventListener.validateUser(userId);
+        if (!userExists) {
+            throw new UserNotFoundException("Пользователь с id=" + userId + " не найден");
+        }
     }
 
     @Override
     @Transactional
     public Long save(Goal goal, Long userId) throws UserNotFoundException, ServiceUnavailableException {
         log.debug("Сохранение цели для пользователя: {}", userId);
-        boolean userExists = userValidationResponseEventListener.validateUser(userId);
-        if (!userExists) {
-            throw new UserNotFoundException("Пользователь с id=" + userId + " не найден");
-        }
+        checkUserId(userId);
         User user = entityManager.getReference(User.class, userId);
         goal.setUser(user);
         log.info("Пользователь найден, сохраняем цель");
@@ -77,6 +82,7 @@ public class GoalServiceImpl implements GoalService {
                 subGoals.setCreatedAt(LocalDateTime.now());
             }
         }
+        calculateGoalProgress(goal);
          return goalRepository.save(goal).getId();
     }
 
@@ -91,6 +97,7 @@ public class GoalServiceImpl implements GoalService {
         existingGoal.setDeadline(goal.getDeadline());
         existingGoal.setTitle(goal.getTitle());
         existingGoal.setSubGoalList(goal.getSubGoalList());
+        calculateGoalProgress(existingGoal);
         return goalRepository.save(existingGoal);
     }
 
@@ -99,6 +106,9 @@ public class GoalServiceImpl implements GoalService {
     public Goal addSubGoal(Long id, SubGoal subGoal) throws GoalNotFoundException {
         Goal existingGoal = getById(id);
         existingGoal.addSubGoal(subGoal);
+        subGoal.setCreatedAt(LocalDateTime.now());
+        subGoal.setGoalStatus(GoalStatus.getCreatedStatus());
+        calculateGoalProgress(existingGoal);
         return goalRepository.save(existingGoal);
     }
 
@@ -113,6 +123,7 @@ public class GoalServiceImpl implements GoalService {
                     .findAny()
                     .orElseThrow(() -> new SubGoalNotFountException("Подцель не найдена по id: " + subId));
             existingGoal.removeSubGoal(subGoal);
+            calculateGoalProgress(existingGoal);
             return goalRepository.save(existingGoal);
         } else {
             throw new SubGoalNotFountException("Список подцелей пуст для цели: " + id);
@@ -124,6 +135,7 @@ public class GoalServiceImpl implements GoalService {
     public Goal updateGoalStatus(Long id, GoalStatus goalStatus) throws GoalNotFoundException {
         Goal existingGoal = getById(id);
         existingGoal.setGoalStatus(goalStatus);
+        calculateGoalProgress(existingGoal);
         return existingGoal;
     }
 
@@ -131,5 +143,22 @@ public class GoalServiceImpl implements GoalService {
     @Transactional
     public void delete(Long id) {
         goalRepository.deleteById(id);
+    }
+
+    @Override
+    public void calculateGoalProgress(Goal existingGoal) {
+        var progressInPercent = 0;
+        var subGoals = existingGoal.getSubGoalList();
+        if (subGoals != null && !subGoals.isEmpty()) {
+            var countOfDoneSubGoals = (int) existingGoal.getSubGoalList()
+                    .stream()
+                    .filter(s -> s.getGoalStatus()
+                            .equals(GoalStatus.DONE))
+                    .count();
+            progressInPercent = countOfDoneSubGoals / subGoals.size() * 100;
+        } else {
+            progressInPercent = existingGoal.getGoalStatus().equals(GoalStatus.DONE) ? 100 : 0;
+        }
+        existingGoal.setProgressInPercent(progressInPercent);
     }
 }
