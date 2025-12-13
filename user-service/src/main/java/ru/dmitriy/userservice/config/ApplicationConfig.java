@@ -26,10 +26,9 @@ import ru.dmitriy.userservice.web.security.JwtTokenProvider;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-
 public class ApplicationConfig {
-
     private final JwtTokenProvider jwtTokenProvider;
+
     @Lazy
     public ApplicationConfig(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -53,7 +52,7 @@ public class ApplicationConfig {
                                 })
                         .accessDeniedHandler((req, resp, authException) -> {
                             resp.setStatus(HttpStatus.FORBIDDEN.value());
-                            resp.getWriter().write("Unauthorized!!!");
+                            resp.getWriter().write("Unauthorized.");
                         }))
                 .authorizeHttpRequests(configurer ->
                         configurer.requestMatchers("/api/v1/auth/**").permitAll()

@@ -1,17 +1,24 @@
 package ru.dmitriy.goalservice.web.dto;
 
+import jakarta.validation.constraints.*;
 import ru.dmitriy.commondomain.domain.goal.GoalCategory;
 import ru.dmitriy.commondomain.domain.goal.GoalStatus;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record CreateGoalDto(
-        Long id,
+        @NotBlank(message = "Title can't be blank")
+        @Size(min = 3, max = 255, message = "Goal title must be between 3 and 255 characters")
         String title,
+        @NotBlank(message = "Description can't be blank")
+        @Size(min = 3, max = 255, message = "Goal description must be between 3 and 255 characters")
         String description,
+        @NotNull(message = "GoalStatus can't be blank")
         GoalStatus goalStatus,
+        @NotNull(message = "GoalCategory can't be blank")
         GoalCategory goalCategory,
+        @NotNull(message = "Deadline is required")
+        @Future(message = "Deadline must be in the future")
         LocalDateTime deadline,
         List<CreateSubGoalDto> subGoalList) {
 }

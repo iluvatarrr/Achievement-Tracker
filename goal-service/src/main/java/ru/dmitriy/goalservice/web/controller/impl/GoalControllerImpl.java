@@ -1,6 +1,11 @@
 package ru.dmitriy.goalservice.web.controller.impl;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.dmitriy.commondomain.domain.exception.GoalNotFoundException;
 import ru.dmitriy.commondomain.domain.exception.SubGoalNotFountException;
@@ -21,6 +26,7 @@ import javax.naming.ServiceUnavailableException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/goal")
 public class GoalControllerImpl implements GoalController {
@@ -35,7 +41,7 @@ public class GoalControllerImpl implements GoalController {
 
     @Override
     @GetMapping("/{id}")
-    public GoalDto getById(@PathVariable Long id) throws GoalNotFoundException {
+    public GoalDto getById(@Min(1) @PathVariable Long id) throws GoalNotFoundException {
         Mappable<Goal, GoalDto> mapper = mapperRegistry.get("goalMapper");
         return mapper.toDto(goalService.getById(id));
     }
@@ -43,10 +49,10 @@ public class GoalControllerImpl implements GoalController {
     @Override
     @GetMapping("filtered/{id}")
     public List<GoalDto> getAllFiltered(
-            @RequestParam(required = false) GoalStatus status,
-            @RequestParam(required = false) GoalCategory category,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime deadline,
-            @PathVariable Long id
+            @NotNull @RequestParam(required = false) GoalStatus status,
+            @NotNull @RequestParam(required = false) GoalCategory category,
+            @NotNull @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime deadline,
+            @Min(1) @PathVariable Long id
     ) throws UserNotFoundException, ServiceUnavailableException {
         Mappable<Goal, GoalDto> mapper = mapperRegistry.get("goalMapper");
 
@@ -58,8 +64,8 @@ public class GoalControllerImpl implements GoalController {
 
 
     @Override
-    @PostMapping()
-    public Long create(@RequestBody CreateGoalDto goalDto, @RequestParam Long userId) throws UserNotFoundException, ServiceUnavailableException {
+    @PostMapping
+    public Long create(@Valid @RequestBody CreateGoalDto goalDto, @Min(1) @RequestParam Long userId) throws UserNotFoundException, ServiceUnavailableException {
         Mappable<Goal, CreateGoalDto> mapper = mapperRegistry.get("createGoalMapper");
         var goal = mapper.toEntity(goalDto);
         return goalService.save(goal, userId);
@@ -67,7 +73,7 @@ public class GoalControllerImpl implements GoalController {
 
     @Override
     @PatchMapping("/{id}")
-    public UpdateGoalDto update(@PathVariable Long id, @RequestBody UpdateGoalDto goalDto) throws GoalNotFoundException {
+    public UpdateGoalDto update(@Min(1) @PathVariable Long id, @Valid @RequestBody UpdateGoalDto goalDto) throws GoalNotFoundException {
         Mappable<Goal, UpdateGoalDto> mapper = mapperRegistry.get("updateGoalMapper");
         var goal = mapper.toEntity(goalDto);
         return mapper.toDto(goalService.update(id,goal));
@@ -75,7 +81,7 @@ public class GoalControllerImpl implements GoalController {
 
     @Override
     @PatchMapping("/{id}/sub-goal/add")
-    public GoalDto addSubGoal(@PathVariable Long id, @RequestBody CreateSubGoalDto subGoalDto) throws GoalNotFoundException {
+    public GoalDto addSubGoal(@Min(1) @PathVariable Long id, @Valid @RequestBody CreateSubGoalDto subGoalDto) throws GoalNotFoundException {
         Mappable<SubGoal, CreateSubGoalDto> subGoalMapper = mapperRegistry.get("createSubGoalMapper");
         var subGoal = subGoalMapper.toEntity(subGoalDto);
         Mappable<Goal, GoalDto> goalMapper = mapperRegistry.get("goalMapper");
@@ -84,21 +90,21 @@ public class GoalControllerImpl implements GoalController {
 
     @Override
     @PatchMapping("/{id}/sub-goal/remove/{subId}")
-    public GoalDto removeSubGoal(@PathVariable Long id, @PathVariable Long subId) throws GoalNotFoundException, SubGoalNotFountException {
+    public GoalDto removeSubGoal(@Min(1) @PathVariable Long id, @Min(1) @PathVariable Long subId) throws GoalNotFoundException, SubGoalNotFountException {
         Mappable<Goal, GoalDto> goalMapper = mapperRegistry.get("goalMapper");
         return goalMapper.toDto(goalService.removeSubGoal(id, subId));
     }
 
     @Override
     @PatchMapping("/status/{id}")
-    public GoalDto updateStatusGoal(@PathVariable Long id, @RequestParam GoalStatus status) throws GoalNotFoundException {
+    public GoalDto updateStatusGoal(@Min(1) @PathVariable Long id, @NotNull @RequestParam GoalStatus status) throws GoalNotFoundException {
         Mappable<Goal, GoalDto> goalMapper = mapperRegistry.get("goalMapper");
         return goalMapper.toDto(goalService.updateGoalStatus(id, status));
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@Min(1) @PathVariable Long id) {
         goalService.delete(id);
     }
 }

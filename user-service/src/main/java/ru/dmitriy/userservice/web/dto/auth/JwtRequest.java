@@ -1,11 +1,16 @@
 package ru.dmitriy.userservice.web.dto.auth;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
 
 public record JwtRequest(
-        @NotNull(message = "Username can`t be NULL")
+        @Email(message = "Email must contain @")
+        @Length(min = 6)
+        @NotBlank(message = "Email can`t be Blank")
         String email,
-        @NotNull(message = "Password can`t be NULL")
+        @Length(min = 6)
+        @NotBlank(message = "Password can`t be Blank")
         String password
 ) {
 }

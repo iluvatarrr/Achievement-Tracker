@@ -1,5 +1,7 @@
 package ru.dmitriy.userservice.web.controller.impl;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
@@ -13,6 +15,7 @@ import ru.dmitriy.userservice.web.dto.auth.JwtRequest;
 import ru.dmitriy.userservice.web.dto.auth.JwtResponse;
 import ru.dmitriy.userservice.web.dto.user.UserRegisterDto;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthControllerImpl implements AuthController {
@@ -27,13 +30,15 @@ public class AuthControllerImpl implements AuthController {
         this.mapperRegistry = mapperRegistry;
     }
 
+    @Override
     @PostMapping("/login")
-    public JwtResponse login(@Validated @RequestBody JwtRequest jwtRequest) throws UserNotFoundException {
+    public JwtResponse login(@Valid @RequestBody JwtRequest jwtRequest) throws UserNotFoundException {
         return authService.login(jwtRequest);
     }
 
+    @Override
     @PostMapping("/register")
-    public UserRegisterDto register(@RequestBody UserRegisterDto userDto) {
+    public UserRegisterDto register(@Valid @RequestBody UserRegisterDto userDto) {
         Mappable<User, UserRegisterDto> mapper = mapperRegistry.get("userRegisterDtoMapper");
         User user = mapper.toEntity(userDto);
         Long id = userService.save(user);
@@ -41,8 +46,9 @@ public class AuthControllerImpl implements AuthController {
         return mapper.toDto(user);
     }
 
+    @Override
     @PostMapping("/refresh")
-    public JwtResponse refresh(@RequestBody String refreshToken) throws UserNotFoundException {
+    public JwtResponse refresh(@NotBlank @RequestBody String refreshToken) throws UserNotFoundException {
         return authService.refresh(refreshToken);
     }
 }

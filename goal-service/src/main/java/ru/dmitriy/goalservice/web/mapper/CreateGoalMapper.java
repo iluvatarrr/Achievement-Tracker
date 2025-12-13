@@ -23,7 +23,6 @@ public class CreateGoalMapper implements Mappable<Goal, CreateGoalDto> {
             return null;
         }
         Goal goal = new Goal();
-        goal.setId(goalDto.id());
         goal.setTitle(goalDto.title());
         goal.setDescription(goalDto.description());
         goal.setGoalStatus(goalDto.goalStatus());
@@ -48,7 +47,6 @@ public class CreateGoalMapper implements Mappable<Goal, CreateGoalDto> {
             return null;
         }
         return new CreateGoalDto(
-                goal.getId(),
                 goal.getTitle(),
                 goal.getDescription(),
                 goal.getGoalStatus(),

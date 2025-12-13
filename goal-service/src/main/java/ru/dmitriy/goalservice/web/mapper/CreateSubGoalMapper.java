@@ -12,9 +12,7 @@ public class CreateSubGoalMapper implements Mappable<SubGoal, CreateSubGoalDto> 
         if (subGoalDto == null) {
             return null;
         }
-
         SubGoal subGoal = new SubGoal();
-//        subGoal.setId(subGoalDto.id());
         subGoal.setTitle(subGoalDto.title());
         subGoal.setDescription(subGoalDto.description());
         subGoal.setDeadline(subGoalDto.deadline());
@@ -27,7 +25,6 @@ public class CreateSubGoalMapper implements Mappable<SubGoal, CreateSubGoalDto> 
             return null;
         }
         return new CreateSubGoalDto(
-                subGoal.getId(),
                 subGoal.getTitle(),
                 subGoal.getDescription(),
                 subGoal.getDeadline()

@@ -1,5 +1,9 @@
 package ru.dmitriy.groupservice.web.controller.impl;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.dmitriy.commondomain.domain.exception.GroupNotFoundException;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
@@ -16,6 +20,7 @@ import ru.dmitriy.groupservice.web.dto.GroupMemberDto;
 import javax.naming.ServiceUnavailableException;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/group")
 public class GroupControllerImpl implements GroupController {
@@ -30,14 +35,14 @@ public class GroupControllerImpl implements GroupController {
 
     @Override
     @GetMapping("/{groupId}")
-    public GroupDto getById(@PathVariable Long groupId) throws GroupNotFoundException {
+    public GroupDto getById(@Min(1) @PathVariable Long groupId) throws GroupNotFoundException {
         Mappable<Group, GroupDto> mapper = mapperRegistry.get("groupDtoMapper");
         return mapper.toDto(groupService.getById(groupId));
     }
 
     @Override
     @PostMapping
-    public Long create(@RequestBody CreateGroupDto createGroupDto) {
+    public Long create(@Valid @RequestBody CreateGroupDto createGroupDto) {
         Mappable<Group, CreateGroupDto> mapper = mapperRegistry.get("createGroupDtoMapper");
         var group = mapper.toEntity(createGroupDto);
         return groupService.create(group);
@@ -45,14 +50,14 @@ public class GroupControllerImpl implements GroupController {
 
     @Override
     @GetMapping("/user-id/{userId}")
-    public List<GroupDto> findAllPublicGroupOrMemberGroup(@PathVariable Long userId) throws UserNotFoundException, ServiceUnavailableException {
+    public List<GroupDto> findAllPublicGroupOrMemberGroup(@Min(1) @PathVariable Long userId) throws UserNotFoundException, ServiceUnavailableException {
         Mappable<Group, GroupDto> mapper = mapperRegistry.get("groupDtoMapper");
         return mapper.toDto(groupService.findAllPublicGroupOrMemberGroup(userId));
     }
 
     @Override
     @PatchMapping("/{groupId}/user-id/{userId}")
-    public GroupMemberDto setRoleToMember(@PathVariable Long groupId, @PathVariable Long userId, @RequestParam GroupRole groupRole) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException {
+    public GroupMemberDto setRoleToMember(@Min(1) @PathVariable Long groupId, @Min(1) @PathVariable Long userId, @NotNull @RequestParam GroupRole groupRole) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException {
         Mappable<GroupMember, GroupMemberDto> mapper = mapperRegistry.get("groupMemberDtoMapper");
         return mapper.toDto(groupService.setRoleToMember(groupId, userId, groupRole));
     }
@@ -65,13 +70,13 @@ public class GroupControllerImpl implements GroupController {
 
     @Override
     @DeleteMapping("/{groupId}/user-id/{userId}")
-    public void deleteMember(@PathVariable Long groupId, @PathVariable Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException {
+    public void deleteMember(@Min(1) @PathVariable Long groupId,@Min(1) @PathVariable Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException {
         groupService.deleteMember(groupId, userId);
     }
 
     @Override
     @DeleteMapping("/{groupId}")
-    public void deleteGroup(@PathVariable Long groupId) {
+    public void deleteGroup(@Min(1) @PathVariable Long groupId) {
         groupService.deleteGroup(groupId);
     }
 }

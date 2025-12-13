@@ -27,22 +27,11 @@ public class CreateGroupDtoMapper implements Mappable<Group, CreateGroupDto> {
         if (group == null) {
             return null;
         }
-
-        UserInfo createdByInfo = null;
-        if (group.getCreatedBy() != null) {
-            createdByInfo = new UserInfo(
-                    group.getCreatedBy().getId(),
-                    group.getCreatedBy().getUsername()
-            );
-        }
-
         return new CreateGroupDto(
-                group.getId(),
                 group.getTitle(),
                 group.getDescription(),
                 group.getOrganisation(),
-                group.getPublic(),
-                createdByInfo
+                group.getPublic()
         );
     }
 }
