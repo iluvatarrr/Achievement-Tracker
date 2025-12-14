@@ -1,5 +1,6 @@
 package ru.dmitriy.goalservice.service;
 
+import ru.dmitriy.commondomain.domain.exception.GroupNotFoundException;
 import ru.dmitriy.commondomain.domain.exception.SubGoalNotFountException;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
 import ru.dmitriy.commondomain.domain.goal.Goal;
@@ -18,6 +19,8 @@ public interface GoalService extends CRUDService<Long, Goal> {
     Goal getById(Long id) throws GoalNotFoundException;
 
     Long save(Goal goal, Long userId) throws UserNotFoundException, ServiceUnavailableException;
+
+    Long save(Goal goal, Long userId, Long groupId) throws UserNotFoundException, ServiceUnavailableException;
 
     Goal addSubGoal(Long id, SubGoal subGoal) throws GoalNotFoundException;
 

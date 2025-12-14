@@ -3,6 +3,7 @@ package ru.dmitriy.groupservice.web.controller.impl;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.dmitriy.commondomain.domain.exception.GroupNotFoundException;
@@ -35,21 +36,24 @@ public class GroupControllerImpl implements GroupController {
 
     @Override
     @GetMapping("/{groupId}")
+    @PreAuthorize("@customSecurityExpression.canAccessGroup(#groupId)")
     public GroupDto getById(@Min(1) @PathVariable Long groupId) throws GroupNotFoundException {
         Mappable<Group, GroupDto> mapper = mapperRegistry.get("groupDtoMapper");
         return mapper.toDto(groupService.getById(groupId));
     }
 
     @Override
-    @PostMapping
-    public Long create(@Valid @RequestBody CreateGroupDto createGroupDto) {
+    @PostMapping("/owner/{userId}")
+    @PreAuthorize("@customSecurityExpression.canAccessUser(#userId)")
+    public Long create(@Min(1) @PathVariable Long userId, @Valid @RequestBody CreateGroupDto createGroupDto) throws UserNotFoundException, ServiceUnavailableException {
         Mappable<Group, CreateGroupDto> mapper = mapperRegistry.get("createGroupDtoMapper");
         var group = mapper.toEntity(createGroupDto);
-        return groupService.create(group);
+        return groupService.create(userId,group);
     }
 
     @Override
     @GetMapping("/user-id/{userId}")
+    @PreAuthorize("@customSecurityExpression.canAccessUser(#userId)")
     public List<GroupDto> findAllPublicGroupOrMemberGroup(@Min(1) @PathVariable Long userId) throws UserNotFoundException, ServiceUnavailableException {
         Mappable<Group, GroupDto> mapper = mapperRegistry.get("groupDtoMapper");
         return mapper.toDto(groupService.findAllPublicGroupOrMemberGroup(userId));
@@ -57,25 +61,22 @@ public class GroupControllerImpl implements GroupController {
 
     @Override
     @PatchMapping("/{groupId}/user-id/{userId}")
+    @PreAuthorize("@customSecurityExpression.canManageMember(#groupId)")
     public GroupMemberDto setRoleToMember(@Min(1) @PathVariable Long groupId, @Min(1) @PathVariable Long userId, @NotNull @RequestParam GroupRole groupRole) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException {
         Mappable<GroupMember, GroupMemberDto> mapper = mapperRegistry.get("groupMemberDtoMapper");
         return mapper.toDto(groupService.setRoleToMember(groupId, userId, groupRole));
     }
 
-//
-//    @Override
-//    public GroupGoalDto createGroupGoal(Long idGroup, Long userId, GroupGoalDto groupGoalDto) throws UserNotFoundException, GroupNotFoundException {
-//        return null;
-//    }
-
     @Override
     @DeleteMapping("/{groupId}/user-id/{userId}")
-    public void deleteMember(@Min(1) @PathVariable Long groupId,@Min(1) @PathVariable Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException {
+    @PreAuthorize("@customSecurityExpression.canManageMember(#groupId) || @customSecurityExpression.canAccessUser(#userId)")
+    public void deleteMember(@Min(1) @PathVariable Long groupId, @Min(1) @PathVariable Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException {
         groupService.deleteMember(groupId, userId);
     }
 
     @Override
     @DeleteMapping("/{groupId}")
+    @PreAuthorize("@customSecurityExpression.isOwnerGroup(#groupId)")
     public void deleteGroup(@Min(1) @PathVariable Long groupId) {
         groupService.deleteGroup(groupId);
     }

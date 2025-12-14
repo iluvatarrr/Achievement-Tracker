@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import ru.dmitriy.commondomain.domain.goal.Goal;
 import ru.dmitriy.commondomain.domain.user.User;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,12 +29,7 @@ public class Group {
     private Set<GroupMember> members = new HashSet<>();
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
-    @ManyToMany
-    @JoinTable(
-            name = "groups_goals",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "goal_id")
-    )
+    @OneToMany(mappedBy = "group")
     private List<Goal> goals = new ArrayList<>();
 
     public Group(Long id, String title, String description, String organisation, Boolean isPublic,
@@ -134,6 +128,15 @@ public class Group {
     public void setGoals(List<Goal> goals) {
         this.goals = goals;
     }
+
+    public void addGoal(Goal goal) {
+        this.goals.add(goal);
+    }
+
+    public void removeGoal(Goal goal) {
+        this.goals.remove(goal);
+    }
+
 
     public void addMember(User user, GroupRole role) {
         GroupMember member = new GroupMember();

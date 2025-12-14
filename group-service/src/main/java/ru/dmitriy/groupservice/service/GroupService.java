@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface GroupService {
     List<Group> findAllPublicGroupOrMemberGroup(Long id) throws UserNotFoundException, ServiceUnavailableException;
-    Long create(Group group);
+    Long create(Long userId, Group group) throws UserNotFoundException, ServiceUnavailableException;
     Group getById(Long id) throws GroupNotFoundException;
     void deleteGroup(Long groupId);
     void deleteMember(Long groupId, Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException;

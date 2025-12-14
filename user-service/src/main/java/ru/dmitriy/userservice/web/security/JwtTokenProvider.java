@@ -115,7 +115,13 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        String username = getUsername(token);
+        Long id = Long.valueOf(getId(token));
+        String username = null;
+        try {
+            username = userService.getById(id).getUsername();
+        } catch (UserNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }

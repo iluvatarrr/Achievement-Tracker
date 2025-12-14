@@ -20,8 +20,8 @@ public class Goal {
     private GoalStatus goalStatus;
     @Enumerated(EnumType.STRING)
     private GoalCategory goalCategory;
-//    @Enumerated(EnumType.STRING)
-//    private GoalType goalType;
+    @Enumerated(EnumType.STRING)
+    private GoalType goalType;
     private Integer progressInPercent;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
@@ -35,12 +35,14 @@ public class Goal {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
-    @ManyToMany(mappedBy = "goals")
-    private Set<Group> groups = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    @JsonIgnore
+    private Group group;
 
     public Goal(Long id, String title, String description, GoalStatus goalStatus, GoalCategory goalCategory,
                 LocalDateTime createdAt, LocalDateTime completedAt, LocalDateTime deadline, List<SubGoal> subGoalList,
-                User user, Set<Group> groups) {
+                User user, Group group, GoalType goalType) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -51,7 +53,8 @@ public class Goal {
         this.deadline = deadline;
         this.subGoalList = subGoalList;
         this.user = user;
-        this.groups = groups;
+        this.group = group;
+        this.goalType = goalType;
     }
 
     public Goal() {}
@@ -161,30 +164,19 @@ public class Goal {
         subGoalList.remove(subGoal);
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        Goal goal = (Goal) object;
-        return Objects.equals(id, goal.id) && Objects.equals(title, goal.title) &&
-                Objects.equals(description, goal.description) && goalStatus == goal.goalStatus &&
-                    goalCategory == goal.goalCategory &&
-                Objects.equals(createdAt, goal.createdAt) && Objects.equals(completedAt, goal.completedAt) &&
-                Objects.equals(deadline, goal.deadline) && Objects.equals(subGoalList, goal.subGoalList) &&
-                Objects.equals(user, goal.user);
+    public Group getGroup() {
+        return group;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, description, goalStatus, goalCategory,
-                createdAt, completedAt, deadline, subGoalList, user);
+    public void setGroups(Group group) {
+        this.group = group;
     }
 
-    public Set<Group> getGroups() {
-        return groups;
+    public GoalType getGoalType() {
+        return goalType;
     }
 
-    public void setGroups(Set<Group> groups) {
-        this.groups = groups;
+    public void setGoalType(GoalType goalType) {
+        this.goalType = goalType;
     }
 }

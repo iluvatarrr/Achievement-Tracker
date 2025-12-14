@@ -2,9 +2,11 @@ package ru.dmitriy.apprunner;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@EntityScan(basePackages = "ru.dmitriy")
 @ComponentScan(basePackages = {
         "ru.dmitriy.apprunner",
         "ru.dmitriy.userservice",

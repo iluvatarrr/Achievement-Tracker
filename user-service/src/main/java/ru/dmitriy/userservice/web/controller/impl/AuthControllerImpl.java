@@ -47,6 +47,7 @@ public class AuthControllerImpl implements AuthController {
     }
 
     @Override
+    @Validated
     @PostMapping("/refresh")
     public JwtResponse refresh(@NotBlank @RequestBody String refreshToken) throws UserNotFoundException {
         return authService.refresh(refreshToken);

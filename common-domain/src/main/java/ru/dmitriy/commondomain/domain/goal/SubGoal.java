@@ -18,7 +18,7 @@ public class SubGoal {
     private LocalDateTime createdAt;
     private LocalDateTime completedAt;
     private LocalDateTime deadline;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goal_id")
     private Goal goal;
 
@@ -97,18 +97,5 @@ public class SubGoal {
 
     public void setGoal(Goal goal) {
         this.goal = goal;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        SubGoal subGoal = (SubGoal) object;
-        return Objects.equals(id, subGoal.id) && Objects.equals(title, subGoal.title) && Objects.equals(description, subGoal.description) && goalStatus == subGoal.goalStatus && Objects.equals(createdAt, subGoal.createdAt) && Objects.equals(completedAt, subGoal.completedAt) && Objects.equals(deadline, subGoal.deadline) && Objects.equals(goal, subGoal.goal);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, description, goalStatus, createdAt, completedAt, deadline, goal);
     }
 }

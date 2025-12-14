@@ -3,6 +3,8 @@ package ru.dmitriy.goalservice.web.dto;
 import jakarta.validation.constraints.*;
 import ru.dmitriy.commondomain.domain.goal.GoalCategory;
 import ru.dmitriy.commondomain.domain.goal.GoalStatus;
+import ru.dmitriy.commondomain.domain.goal.GoalType;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,6 +17,8 @@ public record CreateGoalDto(
         String description,
         @NotNull(message = "GoalStatus can't be blank")
         GoalStatus goalStatus,
+        @NotNull(message = "GoalStatus can't be blank")
+        GoalType goalType,
         @NotNull(message = "GoalCategory can't be blank")
         GoalCategory goalCategory,
         @NotNull(message = "Deadline is required")

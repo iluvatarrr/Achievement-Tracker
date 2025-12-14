@@ -29,6 +29,7 @@ public class GoalMapper implements Mappable<Goal, GoalDto> {
         goal.setDescription(goalDto.description());
         goal.setGoalStatus(goalDto.goalStatus());
         goal.setGoalCategory(goalDto.goalCategory());
+        goal.setGoalType(goalDto.goalType());
         goal.setCreatedAt(goalDto.createdAt());
         goal.setCompletedAt(goalDto.completedAt());
         goal.setDeadline(goalDto.deadline());
@@ -56,6 +57,7 @@ public class GoalMapper implements Mappable<Goal, GoalDto> {
                 goal.getTitle(),
                 goal.getDescription(),
                 goal.getGoalStatus(),
+                goal.getGoalType(),
                 goal.getGoalCategory(),
                 goal.getProgressInPercent(),
                 goal.getCreatedAt(),

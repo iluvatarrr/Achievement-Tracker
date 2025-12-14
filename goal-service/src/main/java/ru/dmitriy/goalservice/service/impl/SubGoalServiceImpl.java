@@ -46,6 +46,7 @@ public class SubGoalServiceImpl implements SubGoalService {
         subGoal.setTitle(subGoalDto.getTitle());
         subGoal.setDescription(subGoalDto.getDescription());
         subGoal.setGoalStatus(subGoalDto.getGoalStatus());
+        goalService.calculateGoalProgress(subGoal.getGoal());
         subGoal.setDeadline(subGoalDto.getDeadline());
         return subGoalRepository.save(subGoal);
     }
@@ -55,11 +56,10 @@ public class SubGoalServiceImpl implements SubGoalService {
     public SubGoal updateStatus(Long subGoalId, GoalStatus status) throws SubGoalNotFountException {
         SubGoal subGoal = getById(subGoalId);
         subGoal.setGoalStatus(status);
-        if (status == GoalStatus.DONE) {
+        if (status.equals(GoalStatus.DONE)) {
             subGoal.setCompletedAt(LocalDateTime.now());
-        } else {
-            subGoal.setCompletedAt(null);
         }
+        goalService.calculateGoalProgress(subGoal.getGoal());
         return subGoalRepository.save(subGoal);
     }
 

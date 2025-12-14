@@ -14,7 +14,6 @@ public class UpdateSubGoalMapper implements Mappable<SubGoal, UpdateSubGoalDto> 
         }
 
         SubGoal subGoal = new SubGoal();
-        subGoal.setId(subGoalDto.id());
         subGoal.setTitle(subGoalDto.title());
         subGoal.setDescription(subGoalDto.description());
         subGoal.setGoalStatus(subGoalDto.goalStatus());
@@ -28,7 +27,6 @@ public class UpdateSubGoalMapper implements Mappable<SubGoal, UpdateSubGoalDto> 
             return null;
         }
         return new UpdateSubGoalDto(
-                subGoal.getId(),
                 subGoal.getTitle(),
                 subGoal.getDescription(),
                 subGoal.getGoalStatus(),

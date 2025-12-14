@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import ru.dmitriy.commondomain.domain.group.Group;
 import ru.dmitriy.commondomain.util.Mappable;
 import ru.dmitriy.groupservice.web.dto.CreateGroupDto;
-import ru.dmitriy.groupservice.web.dto.UserInfo;
 
 @Service
 public class CreateGroupDtoMapper implements Mappable<Group, CreateGroupDto> {

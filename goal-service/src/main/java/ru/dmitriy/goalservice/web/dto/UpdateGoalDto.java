@@ -8,9 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record UpdateGoalDto(
-        @NotNull(message = "Goal ID is required")
-        @Min(value = 1, message = "Goal ID must be positive")
-        Long id,
         @NotBlank(message = "Title can't be blank")
         @Size(min = 3, max = 255, message = "Title must be between 3 and 100 characters")
         String title,

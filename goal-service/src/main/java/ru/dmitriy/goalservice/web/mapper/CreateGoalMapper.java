@@ -27,6 +27,7 @@ public class CreateGoalMapper implements Mappable<Goal, CreateGoalDto> {
         goal.setDescription(goalDto.description());
         goal.setGoalStatus(goalDto.goalStatus());
         goal.setGoalCategory(goalDto.goalCategory());
+        goal.setGoalType(goalDto.goalType());
         goal.setDeadline(goalDto.deadline());
         if (goalDto.subGoalList() != null) {
             List<SubGoal> subGoals = goalDto.subGoalList().stream()
@@ -50,6 +51,7 @@ public class CreateGoalMapper implements Mappable<Goal, CreateGoalDto> {
                 goal.getTitle(),
                 goal.getDescription(),
                 goal.getGoalStatus(),
+                goal.getGoalType(),
                 goal.getGoalCategory(),
                 goal.getDeadline(),
                 goal.getSubGoalList() != null ?

@@ -1,5 +1,10 @@
 package ru.dmitriy.goalservice.web.controller.impl;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.dmitriy.commondomain.domain.exception.GoalNotFoundException;
 import ru.dmitriy.commondomain.domain.exception.SubGoalNotFountException;
@@ -13,6 +18,7 @@ import ru.dmitriy.goalservice.web.dto.UpdateSubGoalDto;
 import ru.dmitriy.commondomain.util.Mappable;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/sub-goals")
 public class SubGoalControllerImpl implements SubGoalController {
@@ -27,7 +33,8 @@ public class SubGoalControllerImpl implements SubGoalController {
 
     @Override
     @GetMapping("by-goal-id/{goalId}")
-    public List<SubGoalDto> getAllByGoalId(@PathVariable Long goalId) throws GoalNotFoundException {
+    @PreAuthorize("@customSecurityExpression.canAccessGoal(#goalId)")
+    public List<SubGoalDto> getAllByGoalId(@Min(1) @PathVariable Long goalId) throws GoalNotFoundException {
         Mappable<SubGoal, SubGoalDto> mapper = mapperRegistry.get("subGoalMapper");
         List<SubGoal> subGoals = subGoalService.getAllByGoalId(goalId);
         return mapper.toDto(subGoals);
@@ -35,7 +42,8 @@ public class SubGoalControllerImpl implements SubGoalController {
 
     @Override
     @PatchMapping("/{subGoalId}/status")
-    public SubGoalDto updateStatus(@PathVariable Long subGoalId, @RequestParam GoalStatus status
+    @PreAuthorize("@customSecurityExpression.canAccessSubGoal(#subGoalId)")
+    public SubGoalDto updateStatus(@Min(1) @PathVariable Long subGoalId, @NotNull @RequestParam GoalStatus status
     ) throws SubGoalNotFountException {
         Mappable<SubGoal, SubGoalDto> mapper = mapperRegistry.get("subGoalMapper");
         SubGoal updatedSubGoal = subGoalService.updateStatus(subGoalId, status);
@@ -44,7 +52,8 @@ public class SubGoalControllerImpl implements SubGoalController {
 
     @Override
     @PatchMapping("/{subGoalId}")
-    public UpdateSubGoalDto update(@PathVariable Long subGoalId, @RequestBody UpdateSubGoalDto subGoalDto) throws SubGoalNotFountException {
+    @PreAuthorize("@customSecurityExpression.canAccessSubGoal(#subGoalId)")
+    public UpdateSubGoalDto update(@Min(1) @PathVariable Long subGoalId, @Valid @RequestBody UpdateSubGoalDto subGoalDto) throws SubGoalNotFountException {
         Mappable<SubGoal, UpdateSubGoalDto> mapper = mapperRegistry.get("updateSubGoalMapper");
         var subGoal = mapper.toEntity(subGoalDto);
         SubGoal updatedSubGoal = subGoalService.update(subGoalId, subGoal);
@@ -53,7 +62,8 @@ public class SubGoalControllerImpl implements SubGoalController {
 
     @Override
     @DeleteMapping("/{subGoalId}")
-    public void delete(@PathVariable Long subGoalId) throws SubGoalNotFountException {
+    @PreAuthorize("@customSecurityExpression.canAccessSubGoal(#subGoalId)")
+    public void delete(@Min(1) @PathVariable Long subGoalId) throws SubGoalNotFountException {
         subGoalService.delete(subGoalId);
     }
 }

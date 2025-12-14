@@ -5,9 +5,6 @@ import ru.dmitriy.commondomain.domain.goal.GoalStatus;
 import java.time.LocalDateTime;
 
 public record UpdateSubGoalDto(
-        @NotNull(message = "SubGoal ID is required")
-        @Min(value = 1, message = "SubGoal ID must be positive")
-        Long id,
         @NotBlank(message = "SubGoal title can't be blank")
         @Size(min = 3, max = 255, message = "SubGoal title must be between 3 and 200 characters")
         String title,

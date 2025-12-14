@@ -1,5 +1,6 @@
 package ru.dmitriy.groupservice.service.impl;
 
+import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dmitriy.commondomain.domain.exception.GroupNotFoundException;
@@ -8,6 +9,7 @@ import ru.dmitriy.commondomain.domain.group.Group;
 import ru.dmitriy.commondomain.domain.group.GroupMember;
 import ru.dmitriy.commondomain.domain.group.GroupRole;
 import ru.dmitriy.commondomain.domain.group.GroupStatus;
+import ru.dmitriy.commondomain.domain.user.User;
 import ru.dmitriy.commondomain.listener.UserValidationResponseEventListener;
 import ru.dmitriy.groupservice.repository.GroupRepository;
 import ru.dmitriy.groupservice.service.GroupService;
@@ -20,10 +22,12 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
     private final UserValidationResponseEventListener userValidationResponseEventListener;
+    private final EntityManager entityManager;
 
-    public GroupServiceImpl(GroupRepository groupRepository, UserValidationResponseEventListener userValidationResponseEventListener) {
+    public GroupServiceImpl(GroupRepository groupRepository, UserValidationResponseEventListener userValidationResponseEventListener, EntityManager entityManager) {
         this.groupRepository = groupRepository;
         this.userValidationResponseEventListener = userValidationResponseEventListener;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -35,17 +39,20 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Group> findAllPublicGroupOrMemberGroup(Long id) throws UserNotFoundException, ServiceUnavailableException {
-        userValidationResponseEventListener.checkUserId(id);
-        return groupRepository.findAllPublicGroupOrMember(id);
+    public List<Group> findAllPublicGroupOrMemberGroup(Long userId) throws UserNotFoundException, ServiceUnavailableException {
+        userValidationResponseEventListener.checkUserId(userId);
+        return groupRepository.findAllPublicGroupOrMember(userId);
     }
 
     @Override
     @Transactional
-    public Long create(Group group) {
+    public Long create(Long userId, Group group) throws UserNotFoundException, ServiceUnavailableException {
+        userValidationResponseEventListener.checkUserId(userId);
+        User userProxy = entityManager.getReference(User.class, userId);
         group.setGroupStatus(GroupStatus.ACTIVE);
         group.setCreatedAt(LocalDateTime.now());
-//        group.setCreatedBy(new User()); // при внеднерии auth заменить на контекстное значение
+        group.setCreatedBy(userProxy);
+        group.addMember(userProxy, GroupRole.OWNER);
         return groupRepository.save(group).getId();
     }
 
@@ -61,7 +68,9 @@ public class GroupServiceImpl implements GroupService {
         userValidationResponseEventListener.checkUserId(userId);
         var group = getById(groupId);
         var groupMember = findUserInGroupByUserId(userId, group);
-        group.getMembers().remove(groupMember);
+        if (!groupMember.getGroupRole().equals(GroupRole.OWNER)) {
+            group.getMembers().remove(groupMember);
+        }
     }
 
     @Override
@@ -70,7 +79,9 @@ public class GroupServiceImpl implements GroupService {
         userValidationResponseEventListener.checkUserId(userId);
         var group = getById(groupId);
         var groupMember = findUserInGroupByUserId(userId, group);
-        groupMember.setGroupRole(groupRole);
+        if (!groupMember.getGroupRole().equals(GroupRole.OWNER)) {
+            groupMember.setGroupRole(groupRole);
+        }
         return groupMember;
     }
 

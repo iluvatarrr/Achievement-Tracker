@@ -2,9 +2,9 @@ package ru.dmitriy.goalservice.web.controller.impl;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.dmitriy.commondomain.domain.exception.GoalNotFoundException;
@@ -41,6 +41,7 @@ public class GoalControllerImpl implements GoalController {
 
     @Override
     @GetMapping("/{id}")
+    @PreAuthorize("@customSecurityExpression.canAccessGoal(#id)")
     public GoalDto getById(@Min(1) @PathVariable Long id) throws GoalNotFoundException {
         Mappable<Goal, GoalDto> mapper = mapperRegistry.get("goalMapper");
         return mapper.toDto(goalService.getById(id));
@@ -48,10 +49,11 @@ public class GoalControllerImpl implements GoalController {
 
     @Override
     @GetMapping("filtered/{id}")
+    @PreAuthorize("@customSecurityExpression.canAccessUser(#id)")
     public List<GoalDto> getAllFiltered(
-            @NotNull @RequestParam(required = false) GoalStatus status,
-            @NotNull @RequestParam(required = false) GoalCategory category,
-            @NotNull @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime deadline,
+            @RequestParam(required = false) GoalStatus status,
+            @RequestParam(required = false) GoalCategory category,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime deadline,
             @Min(1) @PathVariable Long id
     ) throws UserNotFoundException, ServiceUnavailableException {
         Mappable<Goal, GoalDto> mapper = mapperRegistry.get("goalMapper");
@@ -62,9 +64,9 @@ public class GoalControllerImpl implements GoalController {
                 .toList();
     }
 
-
     @Override
     @PostMapping
+    @PreAuthorize("@customSecurityExpression.canAccessUser(#userId)")
     public Long create(@Valid @RequestBody CreateGoalDto goalDto, @Min(1) @RequestParam Long userId) throws UserNotFoundException, ServiceUnavailableException {
         Mappable<Goal, CreateGoalDto> mapper = mapperRegistry.get("createGoalMapper");
         var goal = mapper.toEntity(goalDto);
@@ -72,7 +74,17 @@ public class GoalControllerImpl implements GoalController {
     }
 
     @Override
+    @PostMapping("/create/group")
+    @PreAuthorize("@customSecurityExpression.canManageMember(#groupId)")
+    public Long createGroupGoal(@Valid @RequestBody CreateGoalDto goalDto, @Min(1) @RequestParam Long userId, @Min(1) @RequestParam Long groupId) throws UserNotFoundException, ServiceUnavailableException {
+        Mappable<Goal, CreateGoalDto> mapper = mapperRegistry.get("createGoalMapper");
+        var goal = mapper.toEntity(goalDto);
+        return goalService.save(goal, userId, groupId);
+    }
+
+    @Override
     @PatchMapping("/{id}")
+    @PreAuthorize("@customSecurityExpression.canAccessGoal(#id)")
     public UpdateGoalDto update(@Min(1) @PathVariable Long id, @Valid @RequestBody UpdateGoalDto goalDto) throws GoalNotFoundException {
         Mappable<Goal, UpdateGoalDto> mapper = mapperRegistry.get("updateGoalMapper");
         var goal = mapper.toEntity(goalDto);
@@ -81,6 +93,7 @@ public class GoalControllerImpl implements GoalController {
 
     @Override
     @PatchMapping("/{id}/sub-goal/add")
+    @PreAuthorize("@customSecurityExpression.canAccessGoal(#id)")
     public GoalDto addSubGoal(@Min(1) @PathVariable Long id, @Valid @RequestBody CreateSubGoalDto subGoalDto) throws GoalNotFoundException {
         Mappable<SubGoal, CreateSubGoalDto> subGoalMapper = mapperRegistry.get("createSubGoalMapper");
         var subGoal = subGoalMapper.toEntity(subGoalDto);
@@ -90,6 +103,7 @@ public class GoalControllerImpl implements GoalController {
 
     @Override
     @PatchMapping("/{id}/sub-goal/remove/{subId}")
+    @PreAuthorize("@customSecurityExpression.canAccessGoal(#id)")
     public GoalDto removeSubGoal(@Min(1) @PathVariable Long id, @Min(1) @PathVariable Long subId) throws GoalNotFoundException, SubGoalNotFountException {
         Mappable<Goal, GoalDto> goalMapper = mapperRegistry.get("goalMapper");
         return goalMapper.toDto(goalService.removeSubGoal(id, subId));
@@ -97,6 +111,7 @@ public class GoalControllerImpl implements GoalController {
 
     @Override
     @PatchMapping("/status/{id}")
+    @PreAuthorize("@customSecurityExpression.canAccessGoal(#id)")
     public GoalDto updateStatusGoal(@Min(1) @PathVariable Long id, @NotNull @RequestParam GoalStatus status) throws GoalNotFoundException {
         Mappable<Goal, GoalDto> goalMapper = mapperRegistry.get("goalMapper");
         return goalMapper.toDto(goalService.updateGoalStatus(id, status));
@@ -104,6 +119,7 @@ public class GoalControllerImpl implements GoalController {
 
     @Override
     @DeleteMapping("/{id}")
+    @PreAuthorize("@customSecurityExpression.canAccessGoal(#id)")
     public void delete(@Min(1) @PathVariable Long id) {
         goalService.delete(id);
     }

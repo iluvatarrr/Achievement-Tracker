@@ -6,9 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.dmitriy.commondomain.domain.exception.GroupNotFoundException;
 import ru.dmitriy.commondomain.domain.exception.SubGoalNotFountException;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
 import ru.dmitriy.commondomain.domain.goal.*;
+import ru.dmitriy.commondomain.domain.group.Group;
 import ru.dmitriy.commondomain.domain.user.User;
 import ru.dmitriy.commondomain.domain.exception.GoalNotFoundException;
 import ru.dmitriy.commondomain.listener.UserValidationResponseEventListener;
@@ -65,16 +67,46 @@ public class GoalServiceImpl implements GoalService {
         userValidationResponseEventListener.checkUserId(userId);
         User user = entityManager.getReference(User.class, userId);
         goal.setUser(user);
-//        goal.setGoalType(GoalType.SELF);
         log.info("Пользователь найден, сохраняем цель");
         goal.setCreatedAt(LocalDateTime.now());
         if (goal.getSubGoalList() != null) {
             for (var subGoals : goal.getSubGoalList()) {
                 subGoals.setCreatedAt(LocalDateTime.now());
+                subGoals.setGoalStatus(GoalStatus.IN_PROGRESS);
             }
         }
+        goal.setGoalStatus(GoalStatus.IN_PROGRESS);
         calculateGoalProgress(goal);
          return goalRepository.save(goal).getId();
+    }
+
+    @Override
+    public Long save(Goal goal, Long userId, Long groupId) throws UserNotFoundException, ServiceUnavailableException {
+        log.debug("Сохранение цели для группы: {}", userId);
+        userValidationResponseEventListener.checkUserId(userId);
+        User user = entityManager.getReference(User.class, userId);
+        checkUserAsMemberOfGroup(user, groupId);
+        goal.setUser(user);
+        var group = entityManager.getReference(Group.class, groupId);
+        group.addGoal(goal);
+        goal.setGroups(group);
+        log.info("Пользователь найден, сохраняем цель");
+        goal.setCreatedAt(LocalDateTime.now());
+        if (goal.getSubGoalList() != null) {
+            for (var subGoals : goal.getSubGoalList()) {
+                subGoals.setCreatedAt(LocalDateTime.now());
+                subGoals.setGoalStatus(GoalStatus.IN_PROGRESS);
+            }
+        }
+        goal.setGoalStatus(GoalStatus.IN_PROGRESS);
+        calculateGoalProgress(goal);
+        return goalRepository.save(goal).getId();
+    }
+
+    public void checkUserAsMemberOfGroup(User user, Long groupId) throws UserNotFoundException {
+        if (!user.getGroups().stream().map(Group::getId).toList().contains(groupId)) {
+            throw new UserNotFoundException("Пользователь не найден как член группы");
+        }
     }
 
     @Override
@@ -126,6 +158,9 @@ public class GoalServiceImpl implements GoalService {
     public Goal updateGoalStatus(Long id, GoalStatus goalStatus) throws GoalNotFoundException {
         Goal existingGoal = getById(id);
         existingGoal.setGoalStatus(goalStatus);
+        if (goalStatus.equals(GoalStatus.DONE)) {
+            existingGoal.setCompletedAt(LocalDateTime.now());
+        }
         calculateGoalProgress(existingGoal);
         return existingGoal;
     }
@@ -146,7 +181,7 @@ public class GoalServiceImpl implements GoalService {
                     .filter(s -> s.getGoalStatus()
                             .equals(GoalStatus.DONE))
                     .count();
-            progressInPercent = countOfDoneSubGoals / subGoals.size() * 100;
+            progressInPercent = countOfDoneSubGoals * 100 / subGoals.size();
         } else {
             progressInPercent = existingGoal.getGoalStatus().equals(GoalStatus.DONE) ? 100 : 0;
         }
