@@ -42,6 +42,11 @@ public class GoalServiceImpl implements GoalService {
     }
 
     @Override
+    public List<Goal> findAllByUserId(Long userId) {
+        return goalRepository.findAllByUserId(userId);
+    }
+
+    @Override
     public List<Goal> getAllByGroupId(Long groupId) {
         return goalRepository.findByGroupId(groupId);
     }

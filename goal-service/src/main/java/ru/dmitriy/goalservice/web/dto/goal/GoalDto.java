@@ -1,4 +1,4 @@
-package ru.dmitriy.goalservice.web.dto;
+package ru.dmitriy.goalservice.web.dto.goal;
 
 import ru.dmitriy.commondomain.domain.goal.GoalCategory;
 import ru.dmitriy.commondomain.domain.goal.GoalStatus;

@@ -8,9 +8,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.dmitriy.commondomain.domain.exception.GroupNotFoundException;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
+import ru.dmitriy.commondomain.domain.goal.Goal;
 import ru.dmitriy.commondomain.domain.group.Group;
 import ru.dmitriy.commondomain.domain.group.GroupMember;
 import ru.dmitriy.commondomain.domain.group.GroupRole;
+import ru.dmitriy.commondomain.domain.group.GroupStatus;
 import ru.dmitriy.commondomain.util.Mappable;
 import ru.dmitriy.commondomain.util.MapperRegistry;
 import ru.dmitriy.groupservice.service.GroupService;
@@ -32,6 +34,34 @@ public class GroupControllerImpl implements GroupController {
     public GroupControllerImpl(GroupService groupService, MapperRegistry mapperRegistry) {
         this.groupService = groupService;
         this.mapperRegistry = mapperRegistry;
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<GroupDto> getAll() {
+        Mappable<Group, GroupDto> mapper = mapperRegistry.get("groupDtoMapper");
+        var groups = groupService.findAll();
+        return mapper.toDto(groups);
+    }
+
+    @Override
+    @GetMapping("filtered/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<GroupDto> getAllFiltered(
+            @RequestParam(required = false) String  status,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String deadline
+    ) {
+        Mappable<Group, GroupDto> mapper = mapperRegistry.get("groupDtoMapper");
+        return mapper.toDto(groupService.findFiltered(status, category, deadline));
+    }
+
+    @PatchMapping("/set-user-status/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public GroupDto setUserStatus(@Min(1) @PathVariable Long id, @NotNull @RequestParam GroupStatus groupStatus) throws GroupNotFoundException {
+        Mappable<Group, GroupDto> mapper = mapperRegistry.get("userDtoMapper");
+        var users = groupService.setGroupStatus(id, groupStatus);
+        return mapper.toDto(users);
     }
 
     @Override

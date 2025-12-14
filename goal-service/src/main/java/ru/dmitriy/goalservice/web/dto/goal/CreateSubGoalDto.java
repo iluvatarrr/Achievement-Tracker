@@ -1,4 +1,4 @@
-package ru.dmitriy.goalservice.web.dto;
+package ru.dmitriy.goalservice.web.dto.goal;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;

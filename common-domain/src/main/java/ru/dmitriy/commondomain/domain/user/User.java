@@ -88,6 +88,10 @@ public class User {
         return roles;
     }
 
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }

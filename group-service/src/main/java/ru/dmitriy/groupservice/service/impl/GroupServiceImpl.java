@@ -1,10 +1,14 @@
 package ru.dmitriy.groupservice.service.impl;
 
 import jakarta.persistence.EntityManager;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dmitriy.commondomain.domain.exception.GroupNotFoundException;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
+import ru.dmitriy.commondomain.domain.goal.Goal;
+import ru.dmitriy.commondomain.domain.goal.GoalCategory;
+import ru.dmitriy.commondomain.domain.goal.GoalStatus;
 import ru.dmitriy.commondomain.domain.group.Group;
 import ru.dmitriy.commondomain.domain.group.GroupMember;
 import ru.dmitriy.commondomain.domain.group.GroupRole;
@@ -12,6 +16,7 @@ import ru.dmitriy.commondomain.domain.group.GroupStatus;
 import ru.dmitriy.commondomain.domain.user.User;
 import ru.dmitriy.commondomain.listener.UserValidationResponseEventListener;
 import ru.dmitriy.groupservice.repository.GroupRepository;
+import ru.dmitriy.groupservice.repository.GroupSpecifications;
 import ru.dmitriy.groupservice.service.GroupService;
 import javax.naming.ServiceUnavailableException;
 import java.time.LocalDateTime;
@@ -32,9 +37,32 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Group> findFiltered(String title, String description, String owner) {
+        var spec = Specification.where(GroupSpecifications.fetchGoals())
+                .and(GroupSpecifications.hasTitle(title))
+                .and(GroupSpecifications.hasDescription(description))
+                .and(GroupSpecifications.hasOwner(owner));
+        return groupRepository.findAll(spec);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Group getById(Long id) throws GroupNotFoundException {
         return groupRepository.findById(id).orElseThrow(() ->
                 new GroupNotFoundException("Группа не найдена по id: " + id));
+    }
+
+    @Override
+    @Transactional
+    public Group setGroupStatus(Long id, GroupStatus groupStatus) throws GroupNotFoundException {
+        var group = getById(id);
+        group.setGroupStatus(groupStatus);
+        return groupRepository.save(group);
+    }
+
+    @Override
+    public List<Group> findAll() {
+        return groupRepository.findAll();
     }
 
     @Override

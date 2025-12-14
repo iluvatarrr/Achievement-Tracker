@@ -2,7 +2,7 @@ package ru.dmitriy.goalservice.web.mapper;
 
 import org.springframework.stereotype.Service;
 import ru.dmitriy.commondomain.domain.goal.SubGoal;
-import ru.dmitriy.goalservice.web.dto.UpdateSubGoalDto;
+import ru.dmitriy.goalservice.web.dto.goal.UpdateSubGoalDto;
 import ru.dmitriy.commondomain.util.Mappable;
 
 @Service

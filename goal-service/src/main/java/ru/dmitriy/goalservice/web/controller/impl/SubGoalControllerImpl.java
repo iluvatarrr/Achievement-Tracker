@@ -13,8 +13,8 @@ import ru.dmitriy.commondomain.domain.goal.SubGoal;
 import ru.dmitriy.commondomain.util.MapperRegistry;
 import ru.dmitriy.goalservice.service.SubGoalService;
 import ru.dmitriy.goalservice.web.controller.SubGoalController;
-import ru.dmitriy.goalservice.web.dto.SubGoalDto;
-import ru.dmitriy.goalservice.web.dto.UpdateSubGoalDto;
+import ru.dmitriy.goalservice.web.dto.goal.SubGoalDto;
+import ru.dmitriy.goalservice.web.dto.goal.UpdateSubGoalDto;
 import ru.dmitriy.commondomain.util.Mappable;
 import java.util.List;
 

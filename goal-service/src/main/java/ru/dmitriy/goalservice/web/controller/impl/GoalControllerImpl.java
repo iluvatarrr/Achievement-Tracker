@@ -17,10 +17,10 @@ import ru.dmitriy.commondomain.domain.goal.SubGoal;
 import ru.dmitriy.commondomain.util.MapperRegistry;
 import ru.dmitriy.goalservice.service.GoalService;
 import ru.dmitriy.goalservice.web.controller.GoalController;
-import ru.dmitriy.goalservice.web.dto.CreateGoalDto;
-import ru.dmitriy.goalservice.web.dto.CreateSubGoalDto;
-import ru.dmitriy.goalservice.web.dto.GoalDto;
-import ru.dmitriy.goalservice.web.dto.UpdateGoalDto;
+import ru.dmitriy.goalservice.web.dto.goal.CreateGoalDto;
+import ru.dmitriy.goalservice.web.dto.goal.CreateSubGoalDto;
+import ru.dmitriy.goalservice.web.dto.goal.GoalDto;
+import ru.dmitriy.goalservice.web.dto.goal.UpdateGoalDto;
 import ru.dmitriy.commondomain.util.Mappable;
 import javax.naming.ServiceUnavailableException;
 import java.time.LocalDateTime;
@@ -66,10 +66,7 @@ public class GoalControllerImpl implements GoalController {
     ) throws UserNotFoundException, ServiceUnavailableException {
         Mappable<Goal, GoalDto> mapper = mapperRegistry.get("goalMapper");
 
-        return goalService.findFiltered(status, category, deadline, id)
-                .stream()
-                .map(mapper::toDto)
-                .toList();
+        return mapper.toDto(goalService.findFiltered(status, category, deadline, id));
     }
 
     @Override

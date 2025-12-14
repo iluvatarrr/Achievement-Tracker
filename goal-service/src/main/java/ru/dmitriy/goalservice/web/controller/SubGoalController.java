@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import ru.dmitriy.commondomain.domain.exception.GoalNotFoundException;
 import ru.dmitriy.commondomain.domain.exception.SubGoalNotFountException;
 import ru.dmitriy.commondomain.domain.goal.GoalStatus;
-import ru.dmitriy.goalservice.web.dto.SubGoalDto;
-import ru.dmitriy.goalservice.web.dto.UpdateSubGoalDto;
+import ru.dmitriy.goalservice.web.dto.goal.SubGoalDto;
+import ru.dmitriy.goalservice.web.dto.goal.UpdateSubGoalDto;
 import java.util.List;
 
 public interface SubGoalController {

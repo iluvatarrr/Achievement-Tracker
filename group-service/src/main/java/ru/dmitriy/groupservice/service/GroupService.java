@@ -5,10 +5,15 @@ import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
 import ru.dmitriy.commondomain.domain.group.Group;
 import ru.dmitriy.commondomain.domain.group.GroupMember;
 import ru.dmitriy.commondomain.domain.group.GroupRole;
+import ru.dmitriy.commondomain.domain.group.GroupStatus;
+
 import javax.naming.ServiceUnavailableException;
 import java.util.List;
 
 public interface GroupService {
+    List<Group> findFiltered(String title, String description, String owner);
+    Group setGroupStatus(Long id, GroupStatus groupStatus) throws GroupNotFoundException;
+    List<Group> findAll();
     List<Group> findAllPublicGroupOrMemberGroup(Long id) throws UserNotFoundException, ServiceUnavailableException;
     Long create(Long userId, Group group) throws UserNotFoundException, ServiceUnavailableException;
     Group getById(Long id) throws GroupNotFoundException;

@@ -121,10 +121,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean checkAccessInvocation(Long invocationId, Long userId) {
         return userRepository.checkAccessInvocation(invocationId, userId);
     }
 
+    @Override
+    @Transactional
+    public User setUserStatus(Long id, UserStatus status) throws UserNotFoundException {
+        User existingUser = getById(id);
+        existingUser.setUserStatus(status);
+        return userRepository.save(existingUser);
+    }
+
+    @Override
+    @Transactional
+    public User addRoleById(Long id, Role role) throws UserNotFoundException {
+        User existingUser = getById(id);
+        existingUser.addRole(role);
+        return userRepository.save(existingUser);
+    }
 
     @Override
     @Transactional

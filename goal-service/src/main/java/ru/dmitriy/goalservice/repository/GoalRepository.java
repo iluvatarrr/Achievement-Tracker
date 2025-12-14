@@ -14,4 +14,5 @@ public interface GoalRepository extends JpaRepository<Goal, Long>, JpaSpecificat
     Optional<Goal> findByIdWithSubGoals(Long id);
 
     List<Goal> findByGroupId(Long groupId);
+    List<Goal> findAllByUserId(Long userId);
 }
