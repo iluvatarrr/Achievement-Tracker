@@ -16,4 +16,5 @@ public interface UserService extends CRUDService<Long, User> {
     boolean containsGoalWithId(Long userId, Long goalId);
     boolean containsSubGoalWithId(Long userId, Long goalId);
     boolean checkAccessByGroupRoles(Long userId,Long groupId, Set<GroupRole> groupRoles);
+    boolean checkAccessInvocation(Long invocationId, Long userId);
 }

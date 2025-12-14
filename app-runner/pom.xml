@@ -23,6 +23,11 @@
         </dependency>
         <dependency>
             <groupId>ru.dmitriy</groupId>
+            <artifactId>notification-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.dmitriy</groupId>
             <artifactId>goal-service</artifactId>
             <version>${project.version}</version>
         </dependency>

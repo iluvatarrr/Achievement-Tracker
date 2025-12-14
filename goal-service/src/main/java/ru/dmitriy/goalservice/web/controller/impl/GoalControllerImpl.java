@@ -48,6 +48,14 @@ public class GoalControllerImpl implements GoalController {
     }
 
     @Override
+    @GetMapping("all/group/{groupId}")
+    @PreAuthorize("@customSecurityExpression.canAccessGroup(#groupId)")
+    public List<GoalDto> getAllByGroupId(@Min(1) @PathVariable Long groupId) {
+        Mappable<Goal, GoalDto> mapper = mapperRegistry.get("goalMapper");
+        return mapper.toDto(goalService.getAllByGroupId(groupId));
+    }
+
+    @Override
     @GetMapping("filtered/{id}")
     @PreAuthorize("@customSecurityExpression.canAccessUser(#id)")
     public List<GoalDto> getAllFiltered(

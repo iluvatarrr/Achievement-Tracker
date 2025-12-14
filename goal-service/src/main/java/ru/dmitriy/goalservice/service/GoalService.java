@@ -16,6 +16,8 @@ import java.util.List;
 public interface GoalService extends CRUDService<Long, Goal> {
     List<Goal> findAll();
 
+    List<Goal> getAllByGroupId(Long id);
+
     Goal getById(Long id) throws GoalNotFoundException;
 
     Long save(Goal goal, Long userId) throws UserNotFoundException, ServiceUnavailableException;

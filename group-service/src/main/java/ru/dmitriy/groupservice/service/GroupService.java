@@ -13,6 +13,7 @@ public interface GroupService {
     Long create(Long userId, Group group) throws UserNotFoundException, ServiceUnavailableException;
     Group getById(Long id) throws GroupNotFoundException;
     void deleteGroup(Long groupId);
+    void addMember(Long groupId, Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException;
     void deleteMember(Long groupId, Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException;
     GroupMember setRoleToMember(Long groupId, Long userId, GroupRole groupRole) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException;
 }

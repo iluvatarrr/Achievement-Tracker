@@ -19,10 +19,12 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>notification-service</module>
         <module>user-service</module>
         <module>goal-service</module>
         <module>group-service</module>
         <module>common-domain</module>
+        <module>notification-service</module>
         <module>app-runner</module>
     </modules>
 

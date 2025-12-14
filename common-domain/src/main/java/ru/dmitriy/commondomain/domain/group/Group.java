@@ -3,6 +3,7 @@ package ru.dmitriy.commondomain.domain.group;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import ru.dmitriy.commondomain.domain.goal.Goal;
+import ru.dmitriy.commondomain.domain.notification.GroupInvocation;
 import ru.dmitriy.commondomain.domain.user.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class Group {
     private LocalDateTime createdAt;
     @OneToMany(mappedBy = "group")
     private List<Goal> goals = new ArrayList<>();
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    private List<GroupInvocation> invocations = new ArrayList<>();
 
     public Group(Long id, String title, String description, String organisation, Boolean isPublic,
                  GroupStatus groupStatus, User createdBy, Set<GroupMember> members,
@@ -136,7 +139,6 @@ public class Group {
     public void removeGoal(Goal goal) {
         this.goals.remove(goal);
     }
-
 
     public void addMember(User user, GroupRole role) {
         GroupMember member = new GroupMember();

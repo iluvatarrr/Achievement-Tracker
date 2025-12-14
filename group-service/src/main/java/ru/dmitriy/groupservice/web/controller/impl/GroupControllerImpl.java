@@ -75,6 +75,13 @@ public class GroupControllerImpl implements GroupController {
     }
 
     @Override
+    @PatchMapping("/{groupId}/user-id/{userId}")
+    @PreAuthorize("@customSecurityExpression.canManageMember(#groupId)")
+    public void addMember(@Min(1) @PathVariable Long groupId, @Min(1) @PathVariable Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException {
+        groupService.addMember(groupId, userId);
+    }
+
+    @Override
     @DeleteMapping("/{groupId}")
     @PreAuthorize("@customSecurityExpression.isOwnerGroup(#groupId)")
     public void deleteGroup(@Min(1) @PathVariable Long groupId) {

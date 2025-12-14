@@ -10,6 +10,7 @@
         <module name="group-service" />
         <module name="user-service" />
         <module name="goal-service" />
+        <module name="notification-service" />
         <module name="common-domain" />
       </profile>
     </annotationProcessing>
@@ -24,6 +25,7 @@
       <module name="common-domain" options="-parameters" />
       <module name="goal-service" options="-parameters" />
       <module name="group-service" options="-parameters" />
+      <module name="notification-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
   </component>

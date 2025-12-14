@@ -64,6 +64,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
+    public void addMember(Long groupId, Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException {
+        userValidationResponseEventListener.checkUserId(userId);
+        User userProxy = entityManager.getReference(User.class, userId);
+        var group = getById(groupId);
+        group.addMember(userProxy, GroupRole.MEMBER);
+    }
+
+    @Override
+    @Transactional
     public void deleteMember(Long groupId, Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException {
         userValidationResponseEventListener.checkUserId(userId);
         var group = getById(groupId);

@@ -28,3 +28,6 @@ security:
     secret: ${JWT_SECRET}
     access: 1
     refresh: 30
+scheduled:
+  fixedDelay:
+    expireInvitations: 36000000

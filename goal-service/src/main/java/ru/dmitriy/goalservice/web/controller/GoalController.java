@@ -3,6 +3,7 @@ package ru.dmitriy.goalservice.web.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.dmitriy.commondomain.domain.exception.*;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface GoalController {
+    List<GoalDto> getAllByGroupId(@Min(1) Long groupId);
     GoalDto getById(@Min(1) Long id) throws ResourseNotFoundException;
     Long create(@Valid CreateGoalDto dto, @Min(1) Long id) throws ResourseNotFoundException, ServiceUnavailableException;
     UpdateGoalDto update(@Min(1) Long id, @Valid UpdateGoalDto dto) throws ResourseNotFoundException;

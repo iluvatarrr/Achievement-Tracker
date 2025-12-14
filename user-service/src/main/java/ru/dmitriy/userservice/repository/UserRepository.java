@@ -41,4 +41,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
                                     @Param("groupId") Long groupId,
                                     @Param("groupRoles") Set<GroupRole> groupRoles);
 
+    @Query("""
+        SELECT COUNT(gi) > 0
+        FROM GroupInvocation gi
+        WHERE gi.id = :invocationId
+        AND gi.username = (
+            SELECT u.username FROM User u WHERE u.id = :userId
+        )
+    """)
+    boolean checkAccessInvocation(Long invocationId, Long userId);
+
 }

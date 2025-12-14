@@ -42,6 +42,11 @@ public class GoalServiceImpl implements GoalService {
     }
 
     @Override
+    public List<Goal> getAllByGroupId(Long groupId) {
+        return goalRepository.findByGroupId(groupId);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Goal getById(Long id) throws GoalNotFoundException {
         return goalRepository.findByIdWithSubGoals(id)

@@ -16,7 +16,7 @@ public interface GroupController {
     Long create(@Min(1) Long userId, @Valid CreateGroupDto createGroupDto) throws UserNotFoundException, ServiceUnavailableException;
     List<GroupDto> findAllPublicGroupOrMemberGroup(@Min(1) Long userId) throws UserNotFoundException, ServiceUnavailableException;
     GroupMemberDto setRoleToMember(@Min(1) Long groupId,@Min(1) Long userId, @NotNull GroupRole groupRole) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException;
-//    GroupGoalDto createGroupGoal(Long idGroup, Long userId, GroupGoalDto groupGoalDto) throws UserNotFoundException, GroupNotFoundException;
+    void addMember(@Min(1) Long groupId, @Min(1) Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException;
     void deleteMember(@Min(1) Long groupId, @Min(1) Long userId) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException;
     void deleteGroup(@Min(1) Long groupId);
     GroupDto getById(@Min(1) Long groupId) throws GroupNotFoundException;

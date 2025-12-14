@@ -120,6 +120,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.checkAccessByGroupRoles(userId, groupId, groupRoles);
     }
 
+    @Override
+    public boolean checkAccessInvocation(Long invocationId, Long userId) {
+        return userRepository.checkAccessInvocation(invocationId, userId);
+    }
+
 
     @Override
     @Transactional
