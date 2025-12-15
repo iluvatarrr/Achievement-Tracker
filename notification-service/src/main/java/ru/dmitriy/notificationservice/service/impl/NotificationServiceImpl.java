@@ -58,5 +58,4 @@ public class NotificationServiceImpl implements NotificationService {
             groupInvocation.setStatus(GroupInvitationStatus.EXPIRED);
         }
     }
-
 }

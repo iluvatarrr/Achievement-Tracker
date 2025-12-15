@@ -8,7 +8,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.dmitriy.commondomain.domain.exception.GroupNotFoundException;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
-import ru.dmitriy.commondomain.domain.goal.Goal;
 import ru.dmitriy.commondomain.domain.group.Group;
 import ru.dmitriy.commondomain.domain.group.GroupMember;
 import ru.dmitriy.commondomain.domain.group.GroupRole;
@@ -36,6 +35,7 @@ public class GroupControllerImpl implements GroupController {
         this.mapperRegistry = mapperRegistry;
     }
 
+    @Override
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public List<GroupDto> getAll() {
@@ -45,7 +45,7 @@ public class GroupControllerImpl implements GroupController {
     }
 
     @Override
-    @GetMapping("filtered/{id}")
+    @GetMapping("/filtered")
     @PreAuthorize("hasRole('ADMIN')")
     public List<GroupDto> getAllFiltered(
             @RequestParam(required = false) String  status,
@@ -56,9 +56,10 @@ public class GroupControllerImpl implements GroupController {
         return mapper.toDto(groupService.findFiltered(status, category, deadline));
     }
 
-    @PatchMapping("/set-user-status/{id}")
+    @Override
+    @PatchMapping("/set-group-status/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public GroupDto setUserStatus(@Min(1) @PathVariable Long id, @NotNull @RequestParam GroupStatus groupStatus) throws GroupNotFoundException {
+    public GroupDto setGroupStatus(@Min(1) @PathVariable Long id, @NotNull @RequestParam GroupStatus groupStatus) throws GroupNotFoundException {
         Mappable<Group, GroupDto> mapper = mapperRegistry.get("userDtoMapper");
         var users = groupService.setGroupStatus(id, groupStatus);
         return mapper.toDto(users);
@@ -90,7 +91,7 @@ public class GroupControllerImpl implements GroupController {
     }
 
     @Override
-    @PatchMapping("/{groupId}/user-id/{userId}")
+    @PatchMapping("/{groupId}/user-id/{userId}/role")
     @PreAuthorize("@customSecurityExpression.canManageMember(#groupId)")
     public GroupMemberDto setRoleToMember(@Min(1) @PathVariable Long groupId, @Min(1) @PathVariable Long userId, @NotNull @RequestParam GroupRole groupRole) throws UserNotFoundException, GroupNotFoundException, ServiceUnavailableException {
         Mappable<GroupMember, GroupMemberDto> mapper = mapperRegistry.get("groupMemberDtoMapper");

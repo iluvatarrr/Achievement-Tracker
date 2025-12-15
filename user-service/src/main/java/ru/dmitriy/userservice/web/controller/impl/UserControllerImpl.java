@@ -18,7 +18,6 @@ import ru.dmitriy.userservice.web.controller.UserController;
 import ru.dmitriy.userservice.web.dto.user.ChangePasswordRequest;
 import ru.dmitriy.userservice.web.dto.user.UserDto;
 import ru.dmitriy.userservice.web.dto.user.UserUpdateDto;
-
 import java.util.List;
 
 @RestController
@@ -42,6 +41,7 @@ public class UserControllerImpl implements UserController {
         return mapper.toDto(currentUser);
     }
 
+    @Override
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserDto> getAll() {
@@ -50,6 +50,7 @@ public class UserControllerImpl implements UserController {
         return mapper.toDto(users);
     }
 
+    @Override
     @PatchMapping("/set-role/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public UserDto addRole(@Min(1) @PathVariable Long id, @NotNull @RequestParam Role role) throws UserNotFoundException {
@@ -58,6 +59,7 @@ public class UserControllerImpl implements UserController {
         return mapper.toDto(users);
     }
 
+    @Override
     @PatchMapping("/set-user-status/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public UserDto setUserStatus(@Min(1) @PathVariable Long id, @NotNull @RequestParam UserStatus userStatus) throws UserNotFoundException {
@@ -88,4 +90,6 @@ public class UserControllerImpl implements UserController {
     public void delete(@Min(1) @PathVariable Long id) {
         userService.delete(id);
     }
+
+
 }

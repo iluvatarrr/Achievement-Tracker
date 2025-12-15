@@ -56,8 +56,9 @@ public class ApplicationConfig {
                         }))
                 .authorizeHttpRequests(configurer ->
                         configurer.requestMatchers("/api/v1/auth/**").permitAll()
-                                .requestMatchers("/swagger-ui/**").permitAll()
-                                .requestMatchers("/v3/api-docs/**").permitAll()
+                                .requestMatchers("/actuator/**").hasRole("ADMIN")
+                                .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
+                                .requestMatchers("/v3/api-docs/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .anonymous(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider),

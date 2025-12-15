@@ -32,14 +32,16 @@ public class NotificationControllerImpl implements NotificationController {
         this.mapperRegistry = mapperRegistry;
     }
 
+    @Override
     @PostMapping("/invoke/{groupId}")
-    @PreAuthorize("@customSecurityExpression.canInvoke(#groupId, invokeByUsername)")
+    @PreAuthorize("@customSecurityExpression.canInvoke(#groupId, #invokeByUsername)")
     public Long invokeToGroup(@Min(1) @PathVariable Long groupId, @NotBlank @RequestParam String invokeByUsername, @Valid @RequestBody CreateGroupInvocationDto createGroupInvocationDto) {
-        Mappable<GroupInvocation, CreateGroupInvocationDto> mapper = mapperRegistry.get("groupInvocationDtoMapper");
+        Mappable<GroupInvocation, CreateGroupInvocationDto> mapper = mapperRegistry.get("createGroupInvocationDtoMapper");
         var groupInvocation = mapper.toEntity(createGroupInvocationDto);
         return notificationService.createInvokeToGroup(groupId, invokeByUsername, groupInvocation);
     }
 
+    @Override
     @GetMapping("/all/invocation")
     @PreAuthorize("@customSecurityExpression.canAccessUsername(#username)")
     public List<GroupInvocationDto> getGroupInvocations(@NotBlank @RequestParam String username) {
@@ -48,6 +50,7 @@ public class NotificationControllerImpl implements NotificationController {
         return mapper.toDto(groupInvocations);
     }
 
+    @Override
     @PatchMapping("/change/{id}/status")
     @PreAuthorize("@customSecurityExpression.canAccessInvocation(#id)")
     public void updateInvocationStatus(@Min(1) @PathVariable Long id, @NotNull @RequestParam GroupInvitationStatus status) throws GroupInvocationNotFoundException {

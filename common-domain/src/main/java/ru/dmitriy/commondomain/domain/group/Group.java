@@ -3,6 +3,7 @@ package ru.dmitriy.commondomain.domain.group;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import ru.dmitriy.commondomain.domain.goal.Goal;
+import ru.dmitriy.commondomain.domain.notification.GroupInvitationStatus;
 import ru.dmitriy.commondomain.domain.notification.GroupInvocation;
 import ru.dmitriy.commondomain.domain.user.User;
 import java.time.LocalDateTime;
@@ -141,11 +142,19 @@ public class Group {
     }
 
     public void addMember(User user, GroupRole role) {
-        GroupMember member = new GroupMember();
-        member.setGroup(this);
-        member.setUser(user);
-        member.setGroupRole(role);
-        this.members.add(member);
+        if (invocations != null && !invocations.isEmpty()) {
+            for (GroupInvocation invocation : invocations) {
+                if (invocation.getUsername().equals(user.getUsername()) &&
+                        invocation.getStatus().equals(GroupInvitationStatus.ACCEPTED)) {
+                    GroupMember member = new GroupMember();
+                    member.setGroup(this);
+                    member.setUser(user);
+                    member.setGroupRole(role);
+                    invocation.setStatus(GroupInvitationStatus.CANCELLED);
+                    this.members.add(member);
+                }
+            }
+        }
     }
 
     public void removeMember(User user) {
