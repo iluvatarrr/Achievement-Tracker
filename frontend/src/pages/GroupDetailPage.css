@@ -1,0 +1,219 @@
+.group-detail-page {
+  width: 100%;
+}
+
+.group-detail-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.group-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.group-detail-header h1 {
+  color: #2c3e50;
+  margin: 0;
+}
+
+.group-org {
+  color: #7f8c8d;
+  margin-bottom: 1rem;
+}
+
+.members-section,
+.goals-section {
+  margin-top: 2rem;
+}
+
+.members-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.members-section h2,
+.goals-section h2 {
+  color: #2c3e50;
+  margin: 0;
+}
+
+.invite-form {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.invite-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.invite-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.invite-form input,
+.invite-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.invite-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.accepted-invitations-section {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #fff3cd;
+  border-radius: 8px;
+  border: 1px solid #ffc107;
+}
+
+.accepted-invitations-section h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #856404;
+  font-size: 1.1rem;
+}
+
+.accepted-invitations-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.accepted-invitation-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.accepted-invitation-card .invitation-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.accepted-invitation-card .invitation-username {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.accepted-invitation-card .invitation-date {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.goals-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.create-goal-form {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.create-goal-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.create-goal-form label {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.create-goal-form input,
+.create-goal-form textarea,
+.create-goal-form select {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.create-goal-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.goals-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.goal-item {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-left: 4px solid #3498db;
+}
+
+.goal-item:hover {
+  background-color: #e9ecef;
+}
+
+.goal-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.goal-item-header h3 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.goal-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  background-color: #3498db;
+  color: white;
+}
+
+.goal-item-info {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: #7f8c8d;
+  margin-top: 0.5rem;
+}
+

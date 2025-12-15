@@ -6,9 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dmitriy.commondomain.domain.exception.GroupNotFoundException;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
-import ru.dmitriy.commondomain.domain.goal.Goal;
-import ru.dmitriy.commondomain.domain.goal.GoalCategory;
-import ru.dmitriy.commondomain.domain.goal.GoalStatus;
 import ru.dmitriy.commondomain.domain.group.Group;
 import ru.dmitriy.commondomain.domain.group.GroupMember;
 import ru.dmitriy.commondomain.domain.group.GroupRole;
@@ -97,6 +94,7 @@ public class GroupServiceImpl implements GroupService {
         User userProxy = entityManager.getReference(User.class, userId);
         var group = getById(groupId);
         group.addMember(userProxy, GroupRole.MEMBER);
+        groupRepository.save(group);
     }
 
     @Override

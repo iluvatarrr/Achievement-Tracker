@@ -34,7 +34,6 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @GetMapping("/{id}")
-    @PreAuthorize("@customSecurityExpression.canAccessUser(#id)")
     public UserDto getById(@Min(1) @PathVariable Long id) throws UserNotFoundException {
         Mappable<User, UserDto> mapper = mapperRegistry.get("userDtoMapper");
         var currentUser = userService.getById(id);

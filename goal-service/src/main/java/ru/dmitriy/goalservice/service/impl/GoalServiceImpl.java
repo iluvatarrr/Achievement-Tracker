@@ -11,6 +11,7 @@ import ru.dmitriy.commondomain.domain.exception.SubGoalNotFountException;
 import ru.dmitriy.commondomain.domain.exception.UserNotFoundException;
 import ru.dmitriy.commondomain.domain.goal.*;
 import ru.dmitriy.commondomain.domain.group.Group;
+import ru.dmitriy.commondomain.domain.user.Role;
 import ru.dmitriy.commondomain.domain.user.User;
 import ru.dmitriy.commondomain.domain.exception.GoalNotFoundException;
 import ru.dmitriy.commondomain.listener.UserValidationResponseEventListener;
@@ -114,7 +115,8 @@ public class GoalServiceImpl implements GoalService {
     }
 
     public void checkUserAsMemberOfGroup(User user, Long groupId) throws UserNotFoundException {
-        if (!user.getGroups().stream().map(Group::getId).toList().contains(groupId)) {
+        if (!user.getRoles().contains(Role.ROLE_ADMIN) &&
+                !user.getGroups().stream().map(Group::getId).toList().contains(groupId)) {
             throw new UserNotFoundException("Пользователь не найден как член группы");
         }
     }

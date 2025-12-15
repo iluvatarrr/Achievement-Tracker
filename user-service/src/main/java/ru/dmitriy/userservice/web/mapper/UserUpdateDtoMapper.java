@@ -19,8 +19,6 @@ public class UserUpdateDtoMapper implements Mappable<User, UserUpdateDto> {
         }
         User user = new User();
         user.setUsername(dto.email());
-        user.setRoles(dto.roles());
-        user.setUserStatus(dto.userStatus());
         if (dto.profile() != null) {
             var userProfile = userProfileDtoMapper.toEntity(dto.profile());
             userProfile.setUser(user);
@@ -37,9 +35,7 @@ public class UserUpdateDtoMapper implements Mappable<User, UserUpdateDto> {
         var userProfileDto = userProfileDtoMapper.toDto(entity.getProfile());
         return new UserUpdateDto(
                 entity.getUsername(),
-                entity.getRoles(),
-                userProfileDto,
-                entity.getUserStatus()
+                userProfileDto
         );
     }
 }

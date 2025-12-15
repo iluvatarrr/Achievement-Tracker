@@ -66,8 +66,8 @@ public class UserServiceImpl implements UserService {
     public User update(Long id, User userToUpdate) throws UserNotFoundException {
         User existingUser = getById(id);
         existingUser.setUsername(userToUpdate.getUsername());
-        existingUser.setRoles(userToUpdate.getRoles());
-        existingUser.setUserStatus(userToUpdate.getUserStatus());
+//        existingUser.setRoles(userToUpdate.getRoles());
+//        existingUser.setUserStatus(userToUpdate.getUserStatus());
         if (userToUpdate.getProfile() != null) {
             UserProfile newProfile = userToUpdate.getProfile();
             if (existingUser.getProfile() != null) {

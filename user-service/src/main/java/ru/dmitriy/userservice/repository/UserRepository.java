@@ -35,7 +35,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
              JOIN g.members m
         WHERE g.id = :groupId
           AND m.user.id = :userId
-          AND m.groupRole IN :groupRoles
+          AND m.groupRole IN :groupRoles OR g.isPublic
         """)
     boolean checkAccessByGroupRoles(@Param("userId") Long userId,
                                     @Param("groupId") Long groupId,

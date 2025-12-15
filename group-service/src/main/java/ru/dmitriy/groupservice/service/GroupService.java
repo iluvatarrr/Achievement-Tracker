@@ -6,7 +6,6 @@ import ru.dmitriy.commondomain.domain.group.Group;
 import ru.dmitriy.commondomain.domain.group.GroupMember;
 import ru.dmitriy.commondomain.domain.group.GroupRole;
 import ru.dmitriy.commondomain.domain.group.GroupStatus;
-
 import javax.naming.ServiceUnavailableException;
 import java.util.List;
 

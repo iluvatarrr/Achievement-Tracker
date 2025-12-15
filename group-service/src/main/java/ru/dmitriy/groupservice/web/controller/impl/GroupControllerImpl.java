@@ -60,7 +60,7 @@ public class GroupControllerImpl implements GroupController {
     @PatchMapping("/set-group-status/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public GroupDto setGroupStatus(@Min(1) @PathVariable Long id, @NotNull @RequestParam GroupStatus groupStatus) throws GroupNotFoundException {
-        Mappable<Group, GroupDto> mapper = mapperRegistry.get("userDtoMapper");
+        Mappable<Group, GroupDto> mapper = mapperRegistry.get("groupDtoMapper");
         var users = groupService.setGroupStatus(id, groupStatus);
         return mapper.toDto(users);
     }

@@ -3,6 +3,8 @@ package ru.dmitriy.commondomain.domain.group;
 import jakarta.persistence.*;
 import ru.dmitriy.commondomain.domain.user.User;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "group_members")
 public class GroupMember {
@@ -58,4 +60,22 @@ public class GroupMember {
     public void setGroupRole(GroupRole groupRole) {
         this.groupRole = groupRole;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GroupMember)) return false;
+        GroupMember that = (GroupMember) o;
+        if (id != null && that.id != null) {
+            return id.equals(that.id);
+        }
+        return Objects.equals(user, that.user) && Objects.equals(group, that.group);
+    }
+
+    @Override
+    public int hashCode() {
+        if (id != null) return id.hashCode();
+        return Objects.hash(user, group);
+    }
+
 }

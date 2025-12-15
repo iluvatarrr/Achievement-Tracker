@@ -1,0 +1,72 @@
+.member-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.member-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  gap: 1rem;
+}
+
+.member-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.member-name {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.member-fullname {
+  font-size: 0.875rem;
+  color: #7f8c8d;
+}
+
+.member-role {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.member-role.owner {
+  background-color: #f39c12;
+  color: white;
+}
+
+.member-role.moderator {
+  background-color: #3498db;
+  color: white;
+}
+
+.member-role.member {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.btn-delete-member {
+  padding: 0.5rem 1rem;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: opacity 0.2s;
+}
+
+.btn-delete-member:hover {
+  opacity: 0.9;
+}
+

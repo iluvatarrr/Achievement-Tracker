@@ -1,6 +1,7 @@
 package ru.dmitriy.notificationservice.service.impl;
 
 import jakarta.persistence.EntityManager;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dmitriy.commondomain.domain.exception.GroupInvocationNotFoundException;
@@ -8,6 +9,7 @@ import ru.dmitriy.commondomain.domain.group.Group;
 import ru.dmitriy.commondomain.domain.group.GroupStatus;
 import ru.dmitriy.commondomain.domain.notification.GroupInvitationStatus;
 import ru.dmitriy.commondomain.domain.notification.GroupInvocation;
+import ru.dmitriy.commondomain.listener.event.GroupInvitationUpdatedEvent;
 import ru.dmitriy.notificationservice.repository.GroupInvocationRepository;
 import ru.dmitriy.notificationservice.service.NotificationService;
 import java.time.LocalDateTime;
@@ -18,10 +20,12 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final GroupInvocationRepository groupInvocationRepository;
     private final EntityManager entityManager;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public NotificationServiceImpl(GroupInvocationRepository groupInvocationRepository, EntityManager entityManager) {
+    public NotificationServiceImpl(GroupInvocationRepository groupInvocationRepository, EntityManager entityManager, ApplicationEventPublisher eventPublisher) {
         this.groupInvocationRepository = groupInvocationRepository;
         this.entityManager = entityManager;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -51,11 +55,15 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public void updateInvocationStatus(Long id, GroupInvitationStatus status) throws GroupInvocationNotFoundException {
+        var group = groupInvocationRepository.getByIdWithGroup(id);
         var groupInvocation = getById(id);
-        if (groupInvocation.getExpiresAt().isBefore(LocalDateTime.now())) {
+        if (groupInvocation.getExpiresAt().isAfter(LocalDateTime.now())) {
             groupInvocation.setStatus(status);
         } else {
             groupInvocation.setStatus(GroupInvitationStatus.EXPIRED);
         }
+        eventPublisher.publishEvent(
+                new GroupInvitationUpdatedEvent(groupInvocation.getId(), groupInvocation.getStatus(), groupInvocation.getUsername(), group)
+        );
     }
 }

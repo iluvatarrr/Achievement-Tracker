@@ -7,10 +7,7 @@ import ru.dmitriy.commondomain.domain.notification.GroupInvitationStatus;
 import ru.dmitriy.commondomain.domain.notification.GroupInvocation;
 import ru.dmitriy.commondomain.domain.user.User;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "groups")
@@ -31,7 +28,7 @@ public class Group {
     private Set<GroupMember> members = new HashSet<>();
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
-    @OneToMany(mappedBy = "group")
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<Goal> goals = new ArrayList<>();
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<GroupInvocation> invocations = new ArrayList<>();
@@ -142,21 +139,34 @@ public class Group {
     }
 
     public void addMember(User user, GroupRole role) {
-        if (invocations != null && !invocations.isEmpty()) {
+        if (members != null && members.isEmpty()) {
+            GroupMember member = new GroupMember();
+            member.setGroup(this);
+            member.setUser(user);
+            member.setGroupRole(role);
+            this.members.add(member);
+        }
+        else if (invocations != null && !invocations.isEmpty()) {
             for (GroupInvocation invocation : invocations) {
                 if (invocation.getUsername().equals(user.getUsername()) &&
-                        invocation.getStatus().equals(GroupInvitationStatus.ACCEPTED)) {
+                        invocation.getStatus().equals(GroupInvitationStatus.PENDING)) {
                     GroupMember member = new GroupMember();
                     member.setGroup(this);
                     member.setUser(user);
                     member.setGroupRole(role);
-                    invocation.setStatus(GroupInvitationStatus.CANCELLED);
                     this.members.add(member);
                 }
             }
         }
     }
 
+    public List<GroupInvocation> getInvocations() {
+        return invocations;
+    }
+
+    public void setInvocations(List<GroupInvocation> invocations) {
+        this.invocations = invocations;
+    }
     public void removeMember(User user) {
         this.members.removeIf(member -> member.getUser().equals(user));
     }
